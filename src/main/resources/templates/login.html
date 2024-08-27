@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/auth-layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>CINEMA - Đăng nhập</title>
+</head>
+<body>
+    <div layout:fragment="form">
+        <form class="w-[400px] mt-6 flex flex-col justify-center items-center"
+              id="login-form"
+              method="post"
+              th:action="@{/login}"
+        >
+            <div class="mt-4 w-full">
+                <label for="username" class="block text-[13px] text-label font-medium font-comfortaa uppercase mb-4">
+                    Email <span class="text-[13px] text-red-800 font-medium font-comfortaa">*</span>
+                </label>
+                <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="w-full form-input bg-transparent placeholder-placeHolder text-label font-medium font-comfortaa border-0 h-8 focus:border-0 focus:ring-0 focus:outline-none"
+                        required placeholder="yourmail@gmail.com"
+                        autofocus
+                >
+                <div class="w-full h-[1px] bg-placeHolder"></div>
+            </div>
+            <div class="mt-8 w-full">
+                <label for="password" class="block text-[13px] text-label font-medium font-comfortaa uppercase mb-4">
+                    Mật khẩu <span class="text-[13px] text-red-800 font-medium font-comfortaa">*</span>
+                </label>
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="w-full form-input bg-transparent placeholder-placeHolder text-label font-medium font-comfortaa border-0 h-8 focus:border-0 focus:ring-0 focus:outline-none"
+                        required
+                        placeholder="**********"
+                >
+                <div class="w-full h-[1px] bg-placeHolder"></div>
+            </div>
+            <div class="mt-4 w-full flex justify-end items-end">
+                <label class="block text-[13px] text-notice font-bold font-comfortaa mb-4 cursor-pointer">
+                    Quên mật khẩu
+                </label>
+            </div>
+            <button type="submit" class="text-white text-[15px] w-[160px] horizontal-line rounded-3xl font-inter font-semibold">Đăng nhập</button>
+            <div class="mt-1 font-comfortaa text-[12px] text-red-800" th:if="${error}">* Đăng nhập thất bại: sai tên tài khoản hoặc mật khẩu.</div>
+            <div class="mt-4 w-full flex justify-center items-center space-x-2">
+                <label class="block text-[12px] text-white font-bold font-comfortaa mb-4">Chưa có tài khoản?</label>
+                <label class="block text-[12px] text-primary font-bold font-comfortaa mb-4 cursor-pointer">
+                    <a th:href="@{${register_page}(redirect_uri=${registered_uri})}">Đăng ký</a>
+                </label>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

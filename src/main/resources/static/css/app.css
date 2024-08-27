@@ -1,0 +1,4 @@
+.horizontal-line {
+    height: 44px;
+    background-image: linear-gradient(to right, #FF4343 0%, #AA52A1 46%, #002DBB 100%);
+}

@@ -1,0 +1,80 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    sentinel:
+      username: ${REDIS_USERNAME}
+      password: ${REDIS_PASSWORD}
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+logging:
+  level:
+    org.springframework.cache: trace
+    org.ehcache: trace
+
+
+client:
+  client-id: public-client
+  redirect-uris:
+  - http://127.0.0.1:8080/authorized
+  - https://oauth.pstmn.io/v1/callback
+  - http://127.0.0.1:3000
+  - http://localhost:8080/swagger-ui/oauth2-redirect.html
+  settings:
+    require-authorization-consent: false
+    require-proof-key: true
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: ${client.client-id}
+      use-pkce-with-authorization-code-grant: true
+
+token:
+  key-size: 2048
+  access-token-time-to-live: 7
+
+url:
+  base-url: http://localhost:${server.port}
+  login-page-url: /auth/login
+  login-url: /login
+  register-page-url: /auth/register
+  registered-url: /auth/registered
+  avatar: https://cdn.discordapp.com/attachments/1168144426141499412/1169264779769155594/c6e56503cfdd87da299f72dc416023d4.jpg?ex=66a2512f&is=66a0ffaf&hm=a7dfbd6f1d504be1302857abc0dcb2abc9f8f03741eb92319d5c2dcc2d1f7184&
+
+vn_pay:
+  vn_pay_url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+  vn_pay_return_url: http://localhost:8080/api/v1/bills/payment
+  tmn_code: Z1FTHYFU
+  key: CXQESZOFZ6RADCJ7B2794P6CW641LAOV
+  time_out: 10
+

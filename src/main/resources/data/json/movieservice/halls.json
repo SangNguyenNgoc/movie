@@ -1,0 +1,88 @@
+[
+  {
+    "id": 1,
+    "create_date": "2023-12-01 00:37:15.081016",
+    "last_modified_date": null,
+    "create_by": "00000000-0000-3500-0000-000000000000",
+    "last_modified_by": null,
+    "available_seats": 150,
+    "name": "RAP 1-Trung Chánh",
+    "total_seats": 150,
+    "cinema_id": "2c8d2e0e-ddd0-4c0c-ab8b-81abbc188c24",
+    "status_id": 1
+  },
+  {
+    "id": 2,
+    "create_date": "2023-12-01 00:37:15.081016",
+    "last_modified_date": null,
+    "create_by": "00000000-0000-3500-0000-000000000000",
+    "last_modified_by": null,
+    "available_seats": 150,
+    "name": "RAP 2-Trung Chánh",
+    "total_seats": 150,
+    "cinema_id": "2c8d2e0e-ddd0-4c0c-ab8b-81abbc188c24",
+    "status_id": 1
+  },
+  {
+    "id": 3,
+    "create_date": "2023-12-01 00:37:15.081016",
+    "last_modified_date": null,
+    "create_by": "00000000-0000-3500-0000-000000000000",
+    "last_modified_by": null,
+    "available_seats": 150,
+    "name": "RAP 3-Trung Chánh",
+    "total_seats": 150,
+    "cinema_id": "2c8d2e0e-ddd0-4c0c-ab8b-81abbc188c24",
+    "status_id": 1
+  },
+  {
+    "id": 4,
+    "create_date": "2023-12-01 00:37:15.081016",
+    "last_modified_date": null,
+    "create_by": "00000000-0000-3500-0000-000000000000",
+    "last_modified_by": null,
+    "available_seats": 150,
+    "name": "RAP 1-Nguyễn Du",
+    "total_seats": 150,
+    "cinema_id": "34d10683-8801-4d3c-bc74-c8e7ad364224",
+    "status_id": 1
+  },
+  {
+    "id": 5,
+    "create_date": "2023-12-01 00:37:15.081016",
+    "last_modified_date": null,
+    "create_by": "00000000-0000-3500-0000-000000000000",
+    "last_modified_by": null,
+    "available_seats": 150,
+    "name": "RAP 2-Nguyễn Du",
+    "total_seats": 150,
+    "cinema_id": "34d10683-8801-4d3c-bc74-c8e7ad364224",
+    "status_id": 1
+  },
+  {
+    "id": 6,
+    "create_date": "2023-12-01 00:37:15.081016",
+    "last_modified_date": null,
+    "create_by": "00000000-0000-3500-0000-000000000000",
+    "last_modified_by": null,
+    "available_seats": 150,
+    "name": "RAP 1-Tân Bình",
+    "total_seats": 150,
+    "shows": [
+
+    ]
+  },
+  {
+    "id": 7,
+    "create_date": "2023-12-01 00:37:15.081016",
+    "last_modified_date": null,
+    "create_by": "00000000-0000-3500-0000-000000000000",
+    "last_modified_by": null,
+    "available_seats": 150,
+    "name": "RAP 2-Tân Bình",
+    "total_seats": 150,
+    "shows": [
+
+    ]
+  }
+]

@@ -1,0 +1,259 @@
+[
+  {
+    "id": "2c8d2e0e-ddd0-4c0c-ab8b-81abbc188c24",
+    "create_date": "2023-12-01 00:37:15.081016",
+    "last_modified_date": null,
+    "create_by": "00000000-0000-3500-0000-000000000000",
+    "last_modified_by": null,
+    "address": "466",
+    "description": "Hệ thống rạp The Cinema được thiết kế sang trọng và tiện nghi. Khách hàng bước vào không gian rạp sẽ cảm nhận ngay sự thoải mái và tiện lợi từ việc sắp xếp ghế ngồi theo lối kiến trúc hiện đại, tạo nên không gian xem phim tuyệt vời. Mỗi phòng chiếu được trang bị hệ thống âm thanh vòm và màn hình siêu nét, mang đến trải nghiệm hình ảnh và âm thanh sống động, hấp dẫn.",
+    "name": "Galaxy Trung Chanh",
+    "phone_number": "091222",
+    "slug": "galaxy-trung-chanh",
+    "halls": [
+      {
+        "id": 1,
+        "create_date": "2023-12-01 00:37:15.081016",
+        "last_modified_date": null,
+        "create_by": "00000000-0000-3500-0000-000000000000",
+        "last_modified_by": null,
+        "available_seats": 150,
+        "name": "RAP 1-Trung Chánh",
+        "total_seats": 150,
+        "shows": [
+          {
+            "id": "2bd5218c-761a-4779-87e3-15decaaae8fe",
+            "create_date": "2024-08-08 19:59:08.000000",
+            "last_modified_date": null,
+            "create_by": "35000000-0000-0000-0000-000000000000",
+            "last_modified_by": null,
+            "running_time": 123,
+            "start_date": "2024-08-28",
+            "start_time": "22:00:00",
+            "status": true
+          },
+          {
+            "id": "5a5d8154-ee76-48d1-8ad7-056b54d3c747",
+            "create_date": "2024-08-05 15:24:43.000000",
+            "last_modified_date": null,
+            "create_by": "35000000-0000-0000-0000-000000000000",
+            "last_modified_by": null,
+            "running_time": 123,
+            "start_date": "2024-08-25",
+            "start_time": "13:00:00",
+            "status": true
+          },
+          {
+            "id": "70851e53-223f-4327-a377-e4f789eb76d5",
+            "create_date": "2024-08-08 20:41:02.000000",
+            "last_modified_date": null,
+            "create_by": "35000000-0000-0000-0000-000000000000",
+            "last_modified_by": null,
+            "running_time": 149,
+            "start_date": "2024-08-29",
+            "start_time": "12:00:00",
+            "status": true
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "create_date": "2023-12-01 00:37:15.081016",
+        "last_modified_date": null,
+        "create_by": "00000000-0000-3500-0000-000000000000",
+        "last_modified_by": null,
+        "available_seats": 150,
+        "name": "RAP 2-Trung Chánh",
+        "total_seats": 150,
+        "shows": []
+      },
+      {
+        "id": 3,
+        "create_date": "2023-12-01 00:37:15.081016",
+        "last_modified_date": null,
+        "create_by": "00000000-0000-3500-0000-000000000000",
+        "last_modified_by": null,
+        "available_seats": 150,
+        "name": "RAP 3-Trung Chánh",
+        "total_seats": 150,
+        "shows": [
+          {
+            "id": "2d4eca76-06ab-47ec-a4b6-3db06a7c2c71",
+            "create_date": "2024-08-08 21:17:35.000000",
+            "last_modified_date": null,
+            "create_by": "35000000-0000-0000-0000-000000000000",
+            "last_modified_by": null,
+            "running_time": 149,
+            "start_date": "2024-08-29",
+            "start_time": "10:00:00",
+            "status": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "34d10683-8801-4d3c-bc74-c8e7ad364224",
+    "create_date": "2023-12-02 00:37:15.081000",
+    "last_modified_date": null,
+    "create_by": "00000000-0000-3500-0000-000000000000",
+    "last_modified_by": null,
+    "address": "116 Nguyễn Du, Quận 1, Tp.HCM",
+    "description": "Hệ thống rạp The Cinema được thiết kế sang trọng và tiện nghi. Khách hàng bước vào không gian rạp sẽ cảm nhận ngay sự thoải mái và tiện lợi từ việc sắp xếp ghế ngồi theo lối kiến trúc hiện đại, tạo nên không gian xem phim tuyệt vời. Mỗi phòng chiếu được trang bị hệ thống âm thanh vòm và màn hình siêu nét, mang đến trải nghiệm hình ảnh và âm thanh sống động, hấp dẫn.",
+    "name": "Galaxy Nguyễn Du",
+    "phone_number": "09133333333",
+    "slug": "galaxy-nguyen-du",
+    "halls": [
+      {
+        "id": 4,
+        "create_date": "2023-12-01 00:37:15.081016",
+        "last_modified_date": null,
+        "create_by": "00000000-0000-3500-0000-000000000000",
+        "last_modified_by": null,
+        "available_seats": 150,
+        "name": "RAP 1-Nguyễn Du",
+        "total_seats": 150,
+        "shows": [
+          {
+            "id": "77260894-6793-4a64-b9eb-7600f1655f4a",
+            "create_date": "2024-08-08 21:20:25.000000",
+            "last_modified_date": null,
+            "create_by": "35000000-0000-0000-0000-000000000000",
+            "last_modified_by": null,
+            "running_time": 149,
+            "start_date": "2024-08-30",
+            "start_time": "10:00:00",
+            "status": true
+          },
+          {
+            "id": "504dd8c6-a410-4dd1-ada3-1b068f7277b4",
+            "create_date": "2024-08-06 15:00:58.000000",
+            "last_modified_date": null,
+            "create_by": "35000000-0000-0000-0000-000000000000",
+            "last_modified_by": null,
+            "running_time": 123,
+            "start_date": "2024-08-26",
+            "start_time": "20:00:00",
+            "status": true
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "create_date": "2023-12-01 00:37:15.081016",
+        "last_modified_date": null,
+        "create_by": "00000000-0000-3500-0000-000000000000",
+        "last_modified_by": null,
+        "available_seats": 150,
+        "name": "RAP 2-Nguyễn Du",
+        "total_seats": 150,
+        "shows": [
+          {
+            "id": "e22ac3f2-37bf-4df1-ac7d-b46cc9fc7c76",
+            "create_date": "2024-08-06 15:01:06.000000",
+            "last_modified_date": null,
+            "create_by": "35000000-0000-0000-0000-000000000000",
+            "last_modified_by": null,
+            "running_time": 123,
+            "start_date": "2024-08-26",
+            "start_time": "21:00:00",
+            "status": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "9571ccad-f76f-4bf9-8078-6a0e217bad5c",
+    "create_date": "2023-12-03 00:37:15.081016",
+    "last_modified_date": null,
+    "create_by": "00000000-0000-3500-0000-000000000000",
+    "last_modified_by": null,
+    "address": "246 Nguyễn Hồng Đào, Q.TB, Tp.HCM",
+    "description": "Hệ thống rạp The Cinema được thiết kế sang trọng và tiện nghi. Khách hàng bước vào không gian rạp sẽ cảm nhận ngay sự thoải mái và tiện lợi từ việc sắp xếp ghế ngồi theo lối kiến trúc hiện đại, tạo nên không gian xem phim tuyệt vời. Mỗi phòng chiếu được trang bị hệ thống âm thanh vòm và màn hình siêu nét, mang đến trải nghiệm hình ảnh và âm thanh sống động, hấp dẫn.",
+    "name": "Galaxy Tân Bình",
+    "phone_number": "09122222222",
+    "slug": "galaxy-tan-binh",
+    "halls": [
+      {
+        "id": 6,
+        "create_date": "2023-12-01 00:37:15.081016",
+        "last_modified_date": null,
+        "create_by": "00000000-0000-3500-0000-000000000000",
+        "last_modified_by": null,
+        "available_seats": 150,
+        "name": "RAP 1-Tân Bình",
+        "total_seats": 150,
+        "shows": [
+          {
+            "id": "01a66e1d-76ad-4766-a835-47b3c9108d3e",
+            "create_date": "2024-08-08 19:58:53.000000",
+            "last_modified_date": null,
+            "create_by": "35000000-0000-0000-0000-000000000000",
+            "last_modified_by": null,
+            "running_time": 123,
+            "start_date": "2024-08-28",
+            "start_time": "19:00:00",
+            "status": true
+          },
+          {
+            "id": "0cb93fc7-3002-45ed-a903-ba2ce42d66d3",
+            "create_date": "2024-08-06 16:44:30.000000",
+            "last_modified_date": null,
+            "create_by": "35000000-0000-0000-0000-000000000000",
+            "last_modified_by": null,
+            "running_time": 123,
+            "start_date": "2024-08-27",
+            "start_time": "21:00:00",
+            "status": true
+          },
+          {
+            "id": "0e5de1d1-73e4-4cf4-8164-d486ab20df59",
+            "create_date": "2024-08-08 19:56:36.000000",
+            "last_modified_date": null,
+            "create_by": "35000000-0000-0000-0000-000000000000",
+            "last_modified_by": null,
+            "running_time": 123,
+            "start_date": "2024-08-28",
+            "start_time": "13:00:00",
+            "status": true
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "create_date": "2023-12-01 00:37:15.081016",
+        "last_modified_date": null,
+        "create_by": "00000000-0000-3500-0000-000000000000",
+        "last_modified_by": null,
+        "available_seats": 150,
+        "name": "RAP 2-Tân Bình",
+        "total_seats": 150,
+        "shows": [
+          {
+            "id": "246f043e-17e6-4a4c-8fd8-9afa822e46b2",
+            "create_date": "2024-08-06 16:32:10.000000",
+            "last_modified_date": null,
+            "create_by": "35000000-0000-0000-0000-000000000000",
+            "last_modified_by": null,
+            "running_time": 123,
+            "start_date": "2024-08-26",
+            "start_time": "11:00:00",
+            "status": true
+          },
+          {
+            "id": "2fa85c91-4d23-491d-9a0f-74321a3026f3",
+            "create_date": "2024-08-06 15:01:14.000000",
+            "last_modified_date": null,
+            "create_by": "35000000-0000-0000-0000-000000000000",
+            "last_modified_by": null,
+            "running_time": 123,
+            "start_date": "2024-08-26",
+            "start_time": "21:00:00",
+            "status": true
+          }
+        ]
+      }
+    ]
+  }
+]
