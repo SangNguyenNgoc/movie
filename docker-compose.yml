@@ -1,0 +1,12 @@
+version: "1"
+services:
+  server:
+    environment:
+      TAG: movie
+    build: .
+    container_name: movie
+    restart: always
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
