@@ -15,10 +15,12 @@ import com.example.movieofficial.api.show.interfaces.ShowMapper;
 import com.example.movieofficial.utils.exceptions.DataNotFoundException;
 import com.example.movieofficial.utils.services.RedisService;
 import com.fasterxml.jackson.core.type.TypeReference;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
+import lombok.experimental.FieldDefaults;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,21 +32,15 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DefaultCinemaService implements CinemaService {
 
-    private final CinemaRepository cinemaRepository;
-
-    private final MovieRepository movieRepository;
-
-    private final CinemaMapper cinemaMapper;
-
-    private final MovieMapper movieMapper;
-
-    private final ShowMapper showMapper;
-
-    private final RedisService<List<CinemaDetail>> redisCinemaDetails;
-    
-    private final RedisService<List<CinemaInfoLanding>> redisCinemas;
+    CinemaRepository cinemaRepository;
+    MovieRepository movieRepository;
+    CinemaMapper cinemaMapper;
+    MovieMapper movieMapper;
+    ShowMapper showMapper;
+    RedisService<List<CinemaDetail>> redisCinemaDetails;
 
     @Override
     public List<CinemaInfo> getAll() {
@@ -68,14 +64,10 @@ public class DefaultCinemaService implements CinemaService {
     }
 
     @Override
+    @Cacheable(value = "cinemas", key = "'landing-page'")
     public List<CinemaInfoLanding> getCinemaForLanding() {
-        List<CinemaInfoLanding> cinemaInfoLandings = redisCinemas.getValue("cinemas", new TypeReference<List<CinemaInfoLanding>>() {});
-        if (cinemaInfoLandings == null) {
-            List<Cinema> cinemas = cinemaRepository.findByStatusId();
-            cinemaInfoLandings = cinemas.stream().map(cinemaMapper::toInfoLanding).collect(Collectors.toList());
-            redisCinemas.setValue("cinemas", cinemaInfoLandings);
-        }
-        return cinemaInfoLandings;
+        List<Cinema> cinemas = cinemaRepository.findByStatusId();
+        return cinemas.stream().map(cinemaMapper::toInfoLanding).collect(Collectors.toList());
     }
 
     @Override
@@ -84,7 +76,7 @@ public class DefaultCinemaService implements CinemaService {
                 () -> new DataNotFoundException("Not found", List.of("Cinema not found!"))
         );
         CinemaDetail cinemaDetail = cinemaMapper.toDetail(cinema);
-        List<Movie> movies = movieRepository.findByStatusIdOrStatusIdAndShowsStatusTrueOrderBySumOfRatingsDesc(
+        List<Movie> movies = movieRepository.findByStatusIdOrStatusIdAndShowsOrderBySumOfRatingsDesc(
                 slug,
                 LocalDate.now(),
                 LocalDate.now().plusDays(3)
@@ -107,7 +99,7 @@ public class DefaultCinemaService implements CinemaService {
     @Override
     public List<CinemaDetail> getAllCinemaAndShows() {
         List<Cinema> cinemas = cinemaRepository.findByStatusId();
-        List<Movie> movies = movieRepository.findByStatusIdOrStatusIdAndShowsStatusTrueOrderBySumOfRatingsDesc(
+        List<Movie> movies = movieRepository.findByStatusIdOrStatusIdAndShowsOrderBySumOfRatingsDesc(
                 LocalDate.now(),
                 LocalDate.now().plusDays(3)
         );
@@ -161,7 +153,8 @@ public class DefaultCinemaService implements CinemaService {
 
     @Override
     @Scheduled(cron = "0 0 4 * * ?", zone = "Asia/Ho_Chi_Minh")
-    @EventListener(ApplicationReadyEvent.class)
+//    @EventListener(ApplicationReadyEvent.class)
+    @Async
     @Transactional
     public void cacheAllCinemasMoviesShows() {
         List<CinemaDetail> cinemaDetails = getAllCinemaAndShows();

@@ -3,13 +3,14 @@ package com.example.movieofficial.api.movie.interfaces;
 import com.example.movieofficial.api.movie.entities.Movie;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, String> {
@@ -31,7 +32,7 @@ public interface MovieRepository extends JpaRepository<Movie, String> {
             and s.startDate between ?2 and ?3
             and h.cinema.slug = ?1
             order by m.sumOfRatings desc""")
-    List<Movie> findByStatusIdOrStatusIdAndShowsStatusTrueOrderBySumOfRatingsDesc(
+    List<Movie> findByStatusIdOrStatusIdAndShowsOrderBySumOfRatingsDesc(
             String slug,
             LocalDate startDate,
             LocalDate endDate
@@ -45,10 +46,22 @@ public interface MovieRepository extends JpaRepository<Movie, String> {
             where (m.status.id = 1 or m.status.id = 2)
             and s.startDate between ?1 and ?2
             order by m.sumOfRatings desc""")
-    List<Movie> findByStatusIdOrStatusIdAndShowsStatusTrueOrderBySumOfRatingsDesc(
+    List<Movie> findByStatusIdOrStatusIdAndShowsOrderBySumOfRatingsDesc(
             LocalDate startDate,
             LocalDate endDate
     );
 
     Optional<Movie> findBySlug(String slug);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update movies m set m.status_id = 4 where m.end_date < ?1", nativeQuery = true)
+    void updateStatusByEndDateBefore(LocalDate endDate);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update movies m set m.status_id = 2 where m.release_date <= ?1", nativeQuery = true)
+    void updateStatusByReleaseDateEqualsOrBefore(LocalDate releaseDate);
+
+
 }

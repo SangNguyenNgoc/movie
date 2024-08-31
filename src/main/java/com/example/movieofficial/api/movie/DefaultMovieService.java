@@ -15,10 +15,14 @@ import com.example.movieofficial.api.show.interfaces.ShowMapper;
 import com.example.movieofficial.utils.exceptions.DataNotFoundException;
 import com.example.movieofficial.utils.services.RedisService;
 import com.fasterxml.jackson.core.type.TypeReference;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,25 +34,18 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DefaultMovieService implements MovieService {
 
-    private final MovieStatusRepository movieStatusRepository;
-
-    private final MovieRepository movieRepository;
-
-    private final CinemaRepository cinemaRepository;
-
-    private final MovieMapper movieMapper;
-
-    private final CinemaMapper cinemaMapper;
-
-    private final ShowMapper showMapper;
-
-    private final RedisService<MovieDetail> redisMovieDetail;
-
-    private final RedisService<List<StatusInfo>> redisStatusInfo;
-
-    private final RedisService<List<MovieInfoLanding>> redisMovieInfo;
+    MovieStatusRepository movieStatusRepository;
+    MovieRepository movieRepository;
+    CinemaRepository cinemaRepository;
+    MovieMapper movieMapper;
+    CinemaMapper cinemaMapper;
+    ShowMapper showMapper;
+    RedisService<MovieDetail> redisMovieDetail;
+    RedisService<List<StatusInfo>> redisStatusInfo;
+    RedisService<List<MovieInfoLanding>> redisMovieInfo;
 
     @Override
     public List<StatusInfo> getMovieToLanding() {
@@ -177,7 +174,8 @@ public class DefaultMovieService implements MovieService {
 
     @Override
     @Scheduled(cron = "0 0 4 * * ?", zone = "Asia/Ho_Chi_Minh")
-    @EventListener(ApplicationReadyEvent.class)
+//    @EventListener(ApplicationReadyEvent.class)
+    @Async
     @Transactional
     public void cacheAllMoviesCinemasShows() {
         redisMovieDetail.deleteKeysWithPrefix("movie_detail:");
@@ -189,7 +187,8 @@ public class DefaultMovieService implements MovieService {
 
     @Override
     @Scheduled(cron = "0 0 4 * * ?", zone = "Asia/Ho_Chi_Minh")
-    @EventListener(ApplicationReadyEvent.class)
+//    @EventListener(ApplicationReadyEvent.class)
+    @Async
     @Transactional
     public void cacheAllMoviesToLanding() {
         List<StatusInfo> movieStatusList = getMovieToLanding();
@@ -201,5 +200,15 @@ public class DefaultMovieService implements MovieService {
         List<MovieInfoLanding> showingNow = getMoviesByStatus("showing-now");
         redisMovieInfo.setValue("showing-now", showingNow);
 
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 3 * * ?", zone = "Asia/Ho_Chi_Minh")
+//    @EventListener(ApplicationReadyEvent.class)
+    @Async
+    public void updateMovieStatus() {
+        LocalDate now = LocalDate.now();
+        movieRepository.updateStatusByEndDateBefore(now);
+        movieRepository.updateStatusByReleaseDateEqualsOrBefore(now);
     }
 }

@@ -25,7 +25,6 @@ public class CinemaController {
 
     private final CinemaService cinemaService;
 
-
     @Operation(
             summary = "Get all cinemas",
             description = "This API endpoint allows users to fetch all cinemas. " +

@@ -29,7 +29,6 @@ public class BillController {
 
     private final BillService billService;
 
-
     @Operation(
             summary = "Create bill and return URL to payment.",
             description = "This API endpoint allows users to create a new bill and returns a redirect URL for payment. " +

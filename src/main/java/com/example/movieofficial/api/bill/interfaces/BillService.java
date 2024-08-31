@@ -18,7 +18,7 @@ public interface BillService {
 
     void checkSeatsInHall(List<Long> seatIds, Hall hall);
 
-    void checkSeatsAreReserved(List<Long> seatIds, Show show);
+    void checkSeatsAreReserved(List<Long> seatIds, String showId);
 
     Set<Ticket> createTicket(Show show, List<Seat> seats, Bill bill);
 

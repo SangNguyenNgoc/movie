@@ -35,7 +35,6 @@ public class UserController {
 
     private final UserService userService;
 
-
     @Operation(
             summary = "Fetch User Profile",
             description = "This endpoint allows authenticated users to view their profile information. " +

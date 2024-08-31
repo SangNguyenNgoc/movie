@@ -17,9 +17,4 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DefaultHallService implements HallService {
 
-    private final HallRepository hallRepository;
-
-    private final SeatRepository seatRepository;
-
-    private final SeatTypeRepository seatTypeRepository;
 }

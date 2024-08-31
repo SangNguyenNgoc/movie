@@ -33,4 +33,6 @@ public interface MovieService {
 
     @Scheduled(cron = "0 0 4 * * ?", zone = "Asia/Ho_Chi_Minh")
     void cacheAllMoviesToLanding();
+
+    void updateMovieStatus();
 }

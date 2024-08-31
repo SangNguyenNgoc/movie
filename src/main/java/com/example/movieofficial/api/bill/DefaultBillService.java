@@ -25,7 +25,9 @@ import com.example.movieofficial.utils.exceptions.DataNotFoundException;
 import com.example.movieofficial.utils.exceptions.InputInvalidException;
 import com.example.movieofficial.utils.services.TokenService;
 import com.example.movieofficial.utils.services.VnPayService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,18 +43,19 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DefaultBillService implements BillService {
 
-    private final ShowRepository showRepository;
-    private final SeatRepository seatRepository;
-    private final UserRepository userRepository;
-    private final BillStatusRepository billStatusRepository;
-    private final BillRepository billRepository;
-    private final TokenService tokenService;
-    private final VnPayService vnPayService;
-    private final TicketRepository ticketRepository;
-    private final BillMapper billMapper;
-    private final ShowMapper showMapper;
+    ShowRepository showRepository;
+    SeatRepository seatRepository;
+    UserRepository userRepository;
+    BillStatusRepository billStatusRepository;
+    BillRepository billRepository;
+    TokenService tokenService;
+    VnPayService vnPayService;
+    TicketRepository ticketRepository;
+    BillMapper billMapper;
+    ShowMapper showMapper;
 
 
     @Override
@@ -67,7 +70,7 @@ public class DefaultBillService implements BillService {
 
         checkSeatsInHall(billCreate.getSeatIds(), show.getHall());
 
-        checkSeatsAreReserved(billCreate.getSeatIds(), show);
+        checkSeatsAreReserved(billCreate.getSeatIds(), show.getId());
 
         List<Seat> seats = seatRepository.findAllById(billCreate.getSeatIds());
         long totalPrice = seats.stream().mapToLong(seat -> seat.getType().getPrice()).sum();
@@ -104,9 +107,9 @@ public class DefaultBillService implements BillService {
     }
 
     @Override
-    public void checkSeatsAreReserved(List<Long> seatIds, Show show) {
+    public void checkSeatsAreReserved(List<Long> seatIds, String showId) {
         List<Ticket> ticketsByShow = ticketRepository.findByShowIdOrderBySeatRowNameAscSeatRowIndexAsc(
-                show.getId(),
+                showId,
                 LocalDateTime.now().minusMinutes(2)
         );
         Set<Long> seatIdsAreReserved = ticketsByShow.stream()

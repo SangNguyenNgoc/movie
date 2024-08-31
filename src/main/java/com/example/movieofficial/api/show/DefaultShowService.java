@@ -17,7 +17,13 @@ import com.example.movieofficial.api.ticket.interfaces.TicketRepository;
 import com.example.movieofficial.utils.exceptions.DataNotFoundException;
 import com.example.movieofficial.utils.exceptions.InputInvalidException;
 import com.example.movieofficial.utils.services.ObjectsValidator;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,15 +35,16 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DefaultShowService implements ShowService {
 
-    private final ShowRepository showRepository;
-    private final MovieRepository movieRepository;
-    private final FormatRepository formatRepository;
-    private final HallRepository hallRepository;
-    private final TicketRepository ticketRepository;
-    private final ShowMapper showMapper;
-    private final ObjectsValidator<ShowCreate> showValidator;
+    ShowRepository showRepository;
+    MovieRepository movieRepository;
+    FormatRepository formatRepository;
+    HallRepository hallRepository;
+    TicketRepository ticketRepository;
+    ShowMapper showMapper;
+    ObjectsValidator<ShowCreate> showValidator;
 
     @Override
     public Movie checkMovieInput(String movieId, LocalDateTime dateTime) {
@@ -81,7 +88,7 @@ public class DefaultShowService implements ShowService {
         for (Show show : shows) {
             LocalTime startTimeInData = show.getStartTime();
             LocalTime endTimeInData = startTimeInData.plusMinutes(show.getRunningTime());
-            if ((startTimeTesting.isAfter(startTimeInData) && startTimeTesting.isBefore(endTimeInData)) ||
+            if ( (startTimeTesting.isAfter(startTimeInData) && startTimeTesting.isBefore(endTimeInData)) ||
                     (startTimeInData.isAfter(startTimeTesting) && startTimeInData.isBefore(endTimeTesting)) ||
                     (startTimeTesting.equals(startTimeInData))
             ) {
@@ -145,5 +152,13 @@ public class DefaultShowService implements ShowService {
         } else {
             throw new IllegalArgumentException("Character must be between A and Z");
         }
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 3 * * ?", zone = "Asia/Ho_Chi_Minh")
+//    @EventListener(ApplicationReadyEvent.class)
+    @Async
+    public void updateShowStatus() {
+        showRepository.updateStatusByStartDateBefore(LocalDate.now());
     }
 }

@@ -13,7 +13,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: false
@@ -40,6 +40,8 @@ logging:
   level:
     org.springframework.cache: trace
     org.ehcache: trace
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 
 client:

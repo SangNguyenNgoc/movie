@@ -76,7 +76,7 @@ class MovieRepositoryTest {
 
     @Test
     void findByStatusIdOrStatusIdAndShowsStatusTrueOrderBySumOfRatingsDesc() {
-        List<Movie> comingSoon = movieRepository.findByStatusIdOrStatusIdAndShowsStatusTrueOrderBySumOfRatingsDesc(
+        List<Movie> comingSoon = movieRepository.findByStatusIdOrStatusIdAndShowsOrderBySumOfRatingsDesc(
                 LocalDate.now(), LocalDate.now()
         );
         Assertions.assertThat(comingSoon).isEmpty();
