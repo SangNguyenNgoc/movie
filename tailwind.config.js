@@ -1,6 +1,6 @@
-/** @type {import('tailwindcss').Config} */
+/** @type {import("tailwindcss").Config} */
 module.exports = {
-  content: ['./src/main/resources/templates/**/*.{html,js}'],
+  content: ["./src/main/resources/templates/**/*.{html,js}"],
   theme: {
     extend: {
       backgroundImage: {
@@ -11,19 +11,19 @@ module.exports = {
         notFound: "url('/images/error.svg')"
       },
       colors: {
-        primary: '#31D7A9',
-        notice: '#31AFD7',
-        formBackground: 'rgba(5, 17, 63, 0.8)',
-        errorBackground: 'rgb(9, 25, 54)',
-        label: 'rgba(255,255,255,0.7)',
-        placeHolder: 'rgba(255,255,255,0.2)'
+        primary: "#31D7A9",
+        notice: "#31AFD7",
+        formBackground: "rgba(5, 17, 63, 0.8)",
+        errorBackground: "rgb(9, 25, 54)",
+        label: "rgba(255,255,255,0.7)",
+        placeHolder: "rgba(255,255,255,0.2)"
       },
       fontFamily: {
-        comfortaa: ['Comfortaa', 'sans-serif'],
-        inter: ['Inter', 'sans-serif']
-      },
-    },
+        comfortaa: ["Comfortaa", "sans-serif"],
+        inter: ["Inter", "sans-serif"]
+      }
+    }
   },
-  plugins: [],
-}
+  plugins: []
+};
 

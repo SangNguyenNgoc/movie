@@ -8,8 +8,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * DTO for {@link com.example.movieofficial.api.movie.entities.Movie}

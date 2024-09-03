@@ -1,14 +1,10 @@
 package com.example.movieofficial.api.user;
 
-import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;
 import com.example.movieofficial.api.user.dtos.RegisterRequest;
 import com.example.movieofficial.api.user.dtos.UserInfo;
 import com.example.movieofficial.api.user.dtos.UserProfile;
-import com.example.movieofficial.api.user.entities.User;
-import com.example.movieofficial.api.user.interfaces.UserRepository;
 import com.example.movieofficial.api.user.interfaces.UserService;
 import com.example.movieofficial.utils.dtos.ListResponse;
-import com.example.movieofficial.utils.services.TokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,16 +13,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -41,7 +33,7 @@ public class UserController {
             description = "Creates a new user account with the provided registration details. Returns a confirmation message upon successful registration. " +
                     "Then send a verification URL to the email that the user just used to register."
     )
-    @ApiResponses( value = {
+    @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
                     description = "User successfully registered",

@@ -34,7 +34,8 @@ import org.thymeleaf.context.Context;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,11 +65,11 @@ public class DefaultUserService implements UserService {
     public String register(RegisterRequest registerRequest) {
         registerValidator.validate(registerRequest);
 
-        if(isEmailTaken(registerRequest.getEmail())) {
+        if (isEmailTaken(registerRequest.getEmail())) {
             throw new AppException("Email taken!", HttpStatus.CONFLICT, List.of("Email already exists"));
         }
 
-        if(!isPasswordConfirmed(registerRequest)) {
+        if (!isPasswordConfirmed(registerRequest)) {
             throw new InputInvalidException("Invalid confirming password", List.of("Invalid confirming password"));
         }
 

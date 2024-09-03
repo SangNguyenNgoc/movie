@@ -6,11 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * DTO for {@link com.example.movieofficial.api.movie.entities.Movie}

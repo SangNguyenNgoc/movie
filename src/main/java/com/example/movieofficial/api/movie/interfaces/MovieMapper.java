@@ -3,7 +3,7 @@ package com.example.movieofficial.api.movie.interfaces;
 import com.example.movieofficial.api.movie.dtos.*;
 import com.example.movieofficial.api.movie.entities.Movie;
 import com.example.movieofficial.api.movie.entities.MovieStatus;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
 
 
 @Mapper(componentModel = "spring")

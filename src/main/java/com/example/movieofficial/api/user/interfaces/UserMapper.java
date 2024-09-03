@@ -2,9 +2,8 @@ package com.example.movieofficial.api.user.interfaces;
 
 import com.example.movieofficial.api.user.dtos.UserInfo;
 import com.example.movieofficial.api.user.dtos.UserProfile;
-import com.example.movieofficial.api.user.entities.Role;
 import com.example.movieofficial.api.user.entities.User;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
 
 
 @Mapper(componentModel = "spring", uses = {UserMapper.class})

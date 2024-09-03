@@ -27,7 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -131,8 +134,9 @@ public class DefaultCinemaService implements CinemaService {
 
     @Override
     public List<CinemaDetail> getAllCinemaAndShowsFromRedis() {
-        List<CinemaDetail> cinemaDetails = redisCinemaDetails.getValue("cinemas_movies_shows", new TypeReference<List<CinemaDetail>>() {});
-        if(cinemaDetails == null) {
+        List<CinemaDetail> cinemaDetails = redisCinemaDetails.getValue("cinemas_movies_shows", new TypeReference<List<CinemaDetail>>() {
+        });
+        if (cinemaDetails == null) {
             cinemaDetails = getAllCinemaAndShows();
             redisCinemaDetails.setValue("cinemas_movies_shows", cinemaDetails);
         }

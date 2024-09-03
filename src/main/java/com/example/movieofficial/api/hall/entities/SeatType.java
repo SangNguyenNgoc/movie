@@ -1,6 +1,5 @@
 package com.example.movieofficial.api.hall.entities;
 
-import com.example.movieofficial.api.hall.entities.Seat;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -7,7 +7,6 @@ import com.example.movieofficial.api.user.entities.User;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 public interface UserService {
 

@@ -20,8 +20,6 @@ import com.example.movieofficial.utils.services.ObjectsValidator;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -48,11 +46,11 @@ public class DefaultShowService implements ShowService {
 
     @Override
     public Movie checkMovieInput(String movieId, LocalDateTime dateTime) {
-        Movie movie =  movieRepository.findById(movieId).orElseThrow(
+        Movie movie = movieRepository.findById(movieId).orElseThrow(
                 () -> new DataNotFoundException("Data not found", List.of("Movie not found"))
         );
         LocalDate date = dateTime.toLocalDate();
-        if ( !(date.isAfter(movie.getReleaseDate()) && date.isBefore(movie.getEndDate())) ) {
+        if (!(date.isAfter(movie.getReleaseDate()) && date.isBefore(movie.getEndDate()))) {
             throw new InputInvalidException(
                     "Input invalid",
                     List.of("The movie is not allowed to be shown at this time.")
@@ -66,7 +64,7 @@ public class DefaultShowService implements ShowService {
         Format format = formatRepository.findById(formatId).orElseThrow(
                 () -> new DataNotFoundException("Data not found", List.of("Movie format not found"))
         );
-        if(!formatRepository.existsByIdAndMoviesId(formatId, UUID.fromString(movieId))) {
+        if (!formatRepository.existsByIdAndMoviesId(formatId, UUID.fromString(movieId))) {
             throw new DataNotFoundException(
                     "Data not found",
                     List.of("The movie is not shown in the format you requested")
@@ -88,7 +86,7 @@ public class DefaultShowService implements ShowService {
         for (Show show : shows) {
             LocalTime startTimeInData = show.getStartTime();
             LocalTime endTimeInData = startTimeInData.plusMinutes(show.getRunningTime());
-            if ( (startTimeTesting.isAfter(startTimeInData) && startTimeTesting.isBefore(endTimeInData)) ||
+            if ((startTimeTesting.isAfter(startTimeInData) && startTimeTesting.isBefore(endTimeInData)) ||
                     (startTimeInData.isAfter(startTimeTesting) && startTimeInData.isBefore(endTimeTesting)) ||
                     (startTimeTesting.equals(startTimeInData))
             ) {

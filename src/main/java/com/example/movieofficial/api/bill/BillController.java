@@ -4,8 +4,6 @@ import com.example.movieofficial.api.bill.dtos.BillCreate;
 import com.example.movieofficial.api.bill.dtos.BillDetail;
 import com.example.movieofficial.api.bill.interfaces.BillService;
 import com.example.movieofficial.utils.dtos.ListResponse;
-import com.example.movieofficial.utils.services.TokenService;
-import com.example.movieofficial.utils.services.VnPayService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -126,7 +124,7 @@ public class BillController {
             @RequestParam("size") Integer size
     ) {
         String token = request.getHeader("Authorization");
-        List<BillDetail> billDetails = billService.getBillByUser(token, page-1, size);
+        List<BillDetail> billDetails = billService.getBillByUser(token, page - 1, size);
         var response = ListResponse.<BillDetail>builder()
                 .data(billDetails)
                 .build();

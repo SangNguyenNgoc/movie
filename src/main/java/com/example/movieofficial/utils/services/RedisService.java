@@ -1,7 +1,6 @@
 package com.example.movieofficial.utils.services;
 
 
-import com.example.movieofficial.api.cinema.dtos.CinemaDetail;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -11,7 +10,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -43,7 +41,7 @@ public class RedisService<T> {
         }
     }
 
-    public T getValue(String key,  TypeReference<T> typeReference) {
+    public T getValue(String key, TypeReference<T> typeReference) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());

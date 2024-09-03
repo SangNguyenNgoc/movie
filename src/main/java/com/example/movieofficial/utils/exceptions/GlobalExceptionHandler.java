@@ -3,7 +3,6 @@ package com.example.movieofficial.utils.exceptions;
 import com.example.movieofficial.api.user.exceptions.RoleNotFoundException;
 import com.example.movieofficial.api.user.exceptions.UnauthorizedException;
 import com.example.movieofficial.api.user.exceptions.UserNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

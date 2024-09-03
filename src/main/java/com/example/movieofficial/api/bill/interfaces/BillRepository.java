@@ -1,16 +1,13 @@
 package com.example.movieofficial.api.bill.interfaces;
 
 import com.example.movieofficial.api.bill.entities.Bill;
-import com.example.movieofficial.config.OpenApiConfig;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public interface BillRepository extends JpaRepository<Bill, String> {

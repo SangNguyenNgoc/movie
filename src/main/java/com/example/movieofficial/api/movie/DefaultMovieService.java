@@ -4,7 +4,10 @@ import com.example.movieofficial.api.cinema.dtos.CinemaAndShows;
 import com.example.movieofficial.api.cinema.entities.Cinema;
 import com.example.movieofficial.api.cinema.interfaces.CinemaMapper;
 import com.example.movieofficial.api.cinema.interfaces.CinemaRepository;
-import com.example.movieofficial.api.movie.dtos.*;
+import com.example.movieofficial.api.movie.dtos.MovieDetail;
+import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;
+import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
+import com.example.movieofficial.api.movie.dtos.StatusInfo;
 import com.example.movieofficial.api.movie.entities.Movie;
 import com.example.movieofficial.api.movie.entities.MovieStatus;
 import com.example.movieofficial.api.movie.interfaces.MovieMapper;
@@ -18,9 +21,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,7 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,12 +51,12 @@ public class DefaultMovieService implements MovieService {
 
     @Override
     public List<StatusInfo> getMovieToLanding() {
-        List<MovieStatus> movieStatusList = movieStatusRepository.findByIdOrId(1L,2L);
+        List<MovieStatus> movieStatusList = movieStatusRepository.findByIdOrId(1L, 2L);
         return movieStatusList.stream()
                 .map(movieStatus -> {
                     StatusInfo statusAndMovie = movieMapper.toStatusInfo(movieStatus);
                     List<MovieInfoLanding> movieInfoLandings = statusAndMovie.getMovies();
-                    if(movieInfoLandings != null) {
+                    if (movieInfoLandings != null) {
                         var moviesAfterSort = movieInfoLandings.stream()
                                 .limit(5)
                                 .sorted(Comparator.comparing(MovieInfoLanding::getReleaseDate))
@@ -68,8 +70,9 @@ public class DefaultMovieService implements MovieService {
 
     @Override
     public List<StatusInfo> getMovieToLandingFromRedis() {
-        List<StatusInfo> movieStatusList = redisStatusInfo.getValue("movies", new TypeReference<List<StatusInfo>>() {});
-        if(movieStatusList == null) {
+        List<StatusInfo> movieStatusList = redisStatusInfo.getValue("movies", new TypeReference<List<StatusInfo>>() {
+        });
+        if (movieStatusList == null) {
             movieStatusList = getMovieToLanding();
             redisStatusInfo.setValue("movies", movieStatusList);
         }
@@ -84,8 +87,9 @@ public class DefaultMovieService implements MovieService {
 
     @Override
     public List<MovieInfoLanding> getMoviesByStatusFromRedis(String slug, Integer page, Integer size) {
-        List<MovieInfoLanding> movieInfoLandings = redisMovieInfo.getValue(slug, new TypeReference<List<MovieInfoLanding>>() {});
-        if(movieInfoLandings == null) {
+        List<MovieInfoLanding> movieInfoLandings = redisMovieInfo.getValue(slug, new TypeReference<List<MovieInfoLanding>>() {
+        });
+        if (movieInfoLandings == null) {
             movieInfoLandings = getMoviesByStatus(slug);
             redisMovieInfo.setValue(slug, movieInfoLandings);
         }
@@ -151,7 +155,8 @@ public class DefaultMovieService implements MovieService {
     @Override
     public MovieDetail getMovieAndShowsFromRedis(String slug) {
         MovieDetail movieDetail = redisMovieDetail.getValue(
-                "movie_detail:" + slug, new TypeReference<MovieDetail>() {});
+                "movie_detail:" + slug, new TypeReference<MovieDetail>() {
+                });
         if (movieDetail == null) {
             movieDetail = getMovieAndShows(slug);
             redisMovieDetail.setValue("movie_detail:" + slug, movieDetail);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/auth-layout}">
+<html layout:decorate="~{layout/auth-layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
   <meta charset="UTF-8">
   <title>CINEMA - Đăng ký</title>
@@ -14,84 +14,89 @@
         th:object=" ${register}"
   >
     <div class="mt-4 w-full">
-      <label for="fullName" class="block text-[13px] text-label font-medium font-comfortaa uppercase mb-3">
+      <label class="block text-[13px] text-label font-medium font-comfortaa uppercase mb-3" for="fullName">
         Tên người dùng <span class="text-[13px] text-red-800 font-medium font-comfortaa">*</span>
       </label>
       <input
-        type="text"
+        autofocus
+        class="w-full form-input bg-transparent placeholder-placeHolder text-label font-medium font-comfortaa border-0 h-8 focus:border-0 focus:ring-0 focus:outline-none"
         id="fullName"
         name="fullName"
-        class="w-full form-input bg-transparent placeholder-placeHolder text-label font-medium font-comfortaa border-0 h-8 focus:border-0 focus:ring-0 focus:outline-none"
-        required
-        title="Vui lòng tên người dùng."
         placeholder="Tên nguời dùng"
-        autofocus
+        required
         th:field="*{fullName}"
+        title="Vui lòng tên người dùng."
+        type="text"
       >
       <div class="w-full h-[1px] bg-placeHolder"></div>
     </div>
     <div class="mt-6 w-full">
-      <label for="username" class="block text-[13px] text-label font-medium font-comfortaa uppercase mb-3">
+      <label class="block text-[13px] text-label font-medium font-comfortaa uppercase mb-3" for="username">
         Email <span class="text-[13px] text-red-800 font-medium font-comfortaa">*</span>
       </label>
       <input
-        type="email"
+        autofocus
+        class="w-full form-input bg-transparent placeholder-placeHolder text-label font-medium font-comfortaa border-0 h-8 focus:border-0 focus:ring-0 focus:outline-none"
         id="username"
         name="username"
-        class="w-full form-input bg-transparent placeholder-placeHolder text-label font-medium font-comfortaa border-0 h-8 focus:border-0 focus:ring-0 focus:outline-none"
-        required placeholder="yourmail@gmail.com"
-        autofocus
+        placeholder="yourmail@gmail.com" required
         th:field="*{email}"
+        type="email"
       >
       <div class="w-full h-[1px] bg-placeHolder"></div>
       <div class="mt-1 font-comfortaa text-[12px] text-red-800" th:if="${emailTaken}">Email đã được sử dụng.</div>
     </div>
     <div class="mt-6 w-full">
-      <label for="password" class="block text-[13px] text-label font-medium font-comfortaa uppercase mb-3">
+      <label class="block text-[13px] text-label font-medium font-comfortaa uppercase mb-3" for="password">
         Mật khẩu <span class="text-[13px] text-red-800 font-medium font-comfortaa">*</span>
       </label>
       <input
-        type="password"
+        class="w-full form-input bg-transparent placeholder-placeHolder text-label font-medium font-comfortaa border-0 h-8 focus:border-0 focus:ring-0 focus:outline-none"
         id="password"
         name="password"
-        class="w-full form-input bg-transparent placeholder-placeHolder text-label font-medium font-comfortaa border-0 h-8 focus:border-0 focus:ring-0 focus:outline-none"
-        required
         placeholder="Mật khẩu"
+        required
         th:field="*{password}"
+        type="password"
       >
       <div class="w-full h-[1px] bg-placeHolder"></div>
-      <div class="mt-1 font-comfortaa text-[12px] text-red-800" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+      <div class="mt-1 font-comfortaa text-[12px] text-red-800" th:errors="*{password}"
+           th:if="${#fields.hasErrors('password')}"></div>
     </div>
     <div class="mt-6 w-full">
-      <label for="confirmPassword" class="block text-[13px] text-label font-medium font-comfortaa uppercase mb-3">
+      <label class="block text-[13px] text-label font-medium font-comfortaa uppercase mb-3" for="confirmPassword">
         Nhập lại mật khẩu <span class="text-[13px] text-red-800 font-medium font-comfortaa">*</span>
       </label>
       <input
-        type="password"
+        class="w-full form-input bg-transparent placeholder-placeHolder text-label font-medium font-comfortaa border-0 h-8 focus:border-0 focus:ring-0 focus:outline-none"
         id="confirmPassword"
         name="confirmPassword"
-        class="w-full form-input bg-transparent placeholder-placeHolder text-label font-medium font-comfortaa border-0 h-8 focus:border-0 focus:ring-0 focus:outline-none"
-        required
         placeholder="Nhập lại mật khẩu"
+        required
         th:field="*{confirmPassword}"
+        type="password"
       >
       <div class="w-full h-[1px] bg-placeHolder"></div>
-      <div class="mt-1 font-comfortaa text-[12px] text-red-800" th:if="${confirmInvalid}">Mật khẩu không trùng khớp.</div>
+      <div class="mt-1 font-comfortaa text-[12px] text-red-800" th:if="${confirmInvalid}">Mật khẩu không trùng khớp.
+      </div>
     </div>
     <div class="mt-4 w-full flex justify-start items-start">
       <input
+        class="appearance-none w-4 h-4 mr-2 bg-gray-500 rounded-full checked:bg-primary checked:shadow-[inset_0_0_0_2px_rgba(107,114,128)] cursor-pointer"
         id="agreeTerms"
         type="checkbox"
-        value=""
-        class="appearance-none w-4 h-4 mr-2 bg-gray-500 rounded-full checked:bg-primary checked:shadow-[inset_0_0_0_2px_rgba(107,114,128)] cursor-pointer">
-      <label for="agreeTerms" class="block text-[13px] text-placeHolder font-bold font-comfortaa mb-3">
+        value="">
+      <label class="block text-[13px] text-placeHolder font-bold font-comfortaa mb-3" for="agreeTerms">
         I agree to the
         <span class="text-primary font-bold font-comfortaa">Terms</span>,
         <span class="text-primary font-bold font-comfortaa">Privacy Policy</span> and
         <span class="text-primary font-bold font-comfortaa">Fees</span>
       </label>
     </div>
-    <button type="submit" class="mt-4 mb-3 text-white text-[15px] w-[160px] horizontal-line rounded-3xl font-inter font-semibold">Đăng ký</button>
+    <button class="mt-4 mb-3 text-white text-[15px] w-[160px] horizontal-line rounded-3xl font-inter font-semibold"
+            type="submit">Đăng
+      ký
+    </button>
   </form>
 </div>
 </body>

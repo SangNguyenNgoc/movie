@@ -7,7 +7,6 @@ import com.example.movieofficial.api.show.dtos.ShowCreate;
 import com.example.movieofficial.api.show.dtos.ShowDetail;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface ShowService {
 

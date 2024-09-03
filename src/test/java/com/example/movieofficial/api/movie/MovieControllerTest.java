@@ -18,9 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-
 import java.util.List;
-
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -61,7 +59,7 @@ class MovieControllerTest {
         ));
 
         ResultActions response = mockMvc.perform(get("/api/v1/movies/showing-now")
-                .param("page","1")
+                .param("page", "1")
                 .param("size", "5"));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
@@ -79,7 +77,7 @@ class MovieControllerTest {
         ));
 
         ResultActions response = mockMvc.perform(get("/api/v1/movies/coming-soon")
-                .param("page","1")
+                .param("page", "1")
                 .param("size", "5"));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
@@ -98,7 +96,7 @@ class MovieControllerTest {
         ));
 
         ResultActions response = mockMvc.perform(get("/api/v1/movies")
-                .param("page","1")
+                .param("page", "1")
                 .param("size", "5"));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())

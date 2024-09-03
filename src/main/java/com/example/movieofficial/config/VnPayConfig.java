@@ -9,7 +9,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.*;
 
 @Configuration
@@ -85,7 +84,7 @@ public class VnPayConfig {
                 sb.append("&");
             }
         }
-        return hmacSHA512(this.secretKey,sb.toString());
+        return hmacSHA512(this.secretKey, sb.toString());
     }
 
     public String hmacSHA512(final String key, final String data) {
@@ -110,7 +109,6 @@ public class VnPayConfig {
             return "";
         }
     }
-
 
 
 }

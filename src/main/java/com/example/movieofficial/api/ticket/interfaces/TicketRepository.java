@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, String> {
@@ -18,9 +17,6 @@ public interface TicketRepository extends JpaRepository<Ticket, String> {
             order by t.seat.rowName, t.seat.rowIndex
             """)
     List<Ticket> findByShowIdOrderBySeatRowNameAscSeatRowIndexAsc(String id, LocalDateTime dateTime);
-
-
-
 
 
 }

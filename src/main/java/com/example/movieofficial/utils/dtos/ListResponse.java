@@ -15,6 +15,10 @@ public class ListResponse<T> {
         this.size = (long) data.size();
     }
 
+    public static <T> builder<T> builder() {
+        return new builder<>();
+    }
+
     public static class builder<T> {
         private List<T> data;
 
@@ -26,9 +30,5 @@ public class ListResponse<T> {
         public ListResponse<T> build() {
             return new ListResponse<>(data);
         }
-    }
-
-    public static <T> builder<T> builder() {
-        return new builder<>();
     }
 }

@@ -1,6 +1,5 @@
 package com.example.movieofficial.utils.auditing;
 
-import com.example.movieofficial.api.user.entities.User;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;

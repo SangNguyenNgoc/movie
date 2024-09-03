@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * DTO for {@link com.example.movieofficial.api.cinema.entities.Cinema}

@@ -4,8 +4,8 @@ import com.example.movieofficial.api.bill.dtos.BillDetail;
 import com.example.movieofficial.api.cinema.dtos.CinemaAndShows;
 import com.example.movieofficial.api.hall.entities.Seat;
 import com.example.movieofficial.api.movie.dtos.MovieAndShows;
-import com.example.movieofficial.api.show.entities.Show;
 import com.example.movieofficial.api.show.dtos.ShowDetail;
+import com.example.movieofficial.api.show.entities.Show;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

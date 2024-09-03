@@ -47,10 +47,10 @@ logging:
 client:
   client-id: web-client
   redirect-uris:
-  - http://127.0.0.1:8080/authorized
-  - https://oauth.pstmn.io/v1/callback
-  - http://127.0.0.1:3000
-  - http://localhost:8080/swagger-ui/oauth2-redirect.html
+    - http://127.0.0.1:8080/authorized
+    - https://oauth.pstmn.io/v1/callback
+    - http://127.0.0.1:3000
+    - http://localhost:8080/swagger-ui/oauth2-redirect.html
   settings:
     require-authorization-consent: false
     require-proof-key: true

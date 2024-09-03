@@ -1,7 +1,6 @@
 package com.example.movieofficial.api.user.dtos;
 
 import com.example.movieofficial.api.user.entities.Gender;
-import lombok.Builder;
 
 import java.io.Serializable;
 import java.sql.Date;

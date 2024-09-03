@@ -5,11 +5,7 @@ import com.example.movieofficial.api.cinema.dtos.CinemaDetail;
 import com.example.movieofficial.api.cinema.dtos.CinemaInfo;
 import com.example.movieofficial.api.cinema.dtos.CinemaInfoLanding;
 import com.example.movieofficial.api.cinema.entities.Cinema;
-import com.example.movieofficial.api.show.entities.Show;
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring")
 public interface CinemaMapper {

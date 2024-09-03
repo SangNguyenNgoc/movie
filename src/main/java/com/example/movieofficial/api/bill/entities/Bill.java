@@ -8,7 +8,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,7 +40,7 @@ public class Bill extends AuditorEntity {
     @Column(name = "failure_at", nullable = true)
     private LocalDateTime failureAt;
 
-    @Column(name = "failure",nullable = true)
+    @Column(name = "failure", nullable = true)
     private Boolean failure;
 
     @OneToMany(
