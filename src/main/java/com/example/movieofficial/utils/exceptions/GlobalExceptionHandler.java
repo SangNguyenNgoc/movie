@@ -38,6 +38,11 @@ public class GlobalExceptionHandler {
         return buildResponse(e);
     }
 
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<ErrorResponse> handleException(AppException e) {
+        return buildResponse(e);
+    }
+
     public ResponseEntity<ErrorResponse> buildResponse(AbstractException e) {
         return ResponseEntity.status(e.getStatus().value()).body(
                 ErrorResponse.builder()

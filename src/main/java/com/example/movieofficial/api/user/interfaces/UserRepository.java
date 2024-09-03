@@ -13,7 +13,7 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
     @Query("select u from User u where u.id = ?1 and u.verify = false")
-    Optional<User> findByIdAndVerifyFalse(UUID id);
+    Optional<User> findByIdAndVerifyFalse(String id);
 
     @Query("select u from User u where u.email = ?1")
     Optional<User> findByEmail(String email);
@@ -27,7 +27,8 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Query("select u from User u where u.role.id = ?1 order by u.createDate DESC")
     List<User> findByRoleIdOrderByCreateDateDesc(Integer id, Pageable pageable);
 
-
+    @Query("select u from User u where u.email = ?1 and u.verify = false")
+    Optional<User> findByEmailAndVerifyFalse(String email);
 
 
 }

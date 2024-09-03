@@ -27,5 +27,4 @@ public class RegisterRequest {
     @NotBlank(message = "Hãy xác nhận lại mật khẩu")
     private String confirmPassword;
 
-    private Boolean agreeTerms;
 }

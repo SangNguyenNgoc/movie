@@ -1,5 +1,6 @@
 package com.example.movieofficial.config;
 
+import com.example.movieofficial.api.user.CustomAuthenticationFailureHandler;
 import com.example.movieofficial.utils.auditing.ApplicationAuditAware;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -76,7 +78,11 @@ public class SecurityConfig {
                         .permitAll()
                         .anyRequest().permitAll())
                 .userDetailsService(userDetailsService)
-                .formLogin(login -> login.loginPage(loginPageUrl).loginProcessingUrl(loginUrl).permitAll());
+                .formLogin(login -> login
+                        .loginPage(loginPageUrl)
+//                        .failureHandler(customAuthenticationFailureHandler())
+                        .loginProcessingUrl(loginUrl)
+                        .permitAll());
         return httpSecurity.build();
     }
 
@@ -105,5 +111,10 @@ public class SecurityConfig {
     @Bean
     public AuditorAware<String> auditorAware() {
         return new ApplicationAuditAware();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler customAuthenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
     }
 }

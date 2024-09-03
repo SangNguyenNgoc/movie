@@ -1,6 +1,7 @@
 package com.example.movieofficial.api.user;
 
 import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;
+import com.example.movieofficial.api.user.dtos.RegisterRequest;
 import com.example.movieofficial.api.user.dtos.UserInfo;
 import com.example.movieofficial.api.user.dtos.UserProfile;
 import com.example.movieofficial.api.user.entities.User;
@@ -36,6 +37,39 @@ public class UserController {
     private final UserService userService;
 
     @Operation(
+            summary = "Register a new user",
+            description = "Creates a new user account with the provided registration details. Returns a confirmation message upon successful registration. " +
+                    "Then send a verification URL to the email that the user just used to register."
+    )
+    @ApiResponses( value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "User successfully registered",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request, e.g., missing required fields or mismatched passwords",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Email already exists",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal server error occurred during registration process",
+                    content = @Content(mediaType = "application/json")
+            )
+    })
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(userService.register(request));
+    }
+
+
+    @Operation(
             summary = "Fetch User Profile",
             description = "This endpoint allows authenticated users to view their profile information. " +
                     "Access is restricted to authorized users. " +
@@ -60,7 +94,7 @@ public class UserController {
             )
     })
     @GetMapping("/profile")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER', 'ROLE_GUEST')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<UserProfile> getProfile(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         return ResponseEntity.status(HttpStatus.OK)

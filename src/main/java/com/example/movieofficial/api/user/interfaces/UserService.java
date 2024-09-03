@@ -3,15 +3,21 @@ package com.example.movieofficial.api.user.interfaces;
 import com.example.movieofficial.api.user.dtos.RegisterRequest;
 import com.example.movieofficial.api.user.dtos.UserInfo;
 import com.example.movieofficial.api.user.dtos.UserProfile;
+import com.example.movieofficial.api.user.entities.User;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
 public interface UserService {
 
-    void register(RegisterRequest registerRequest);
+    String register(RegisterRequest registerRequest);
 
-    Map<String, Object> verify(String token);
+    URI verify(String token);
+
+    String sendToVerify(String email);
+
+    void sendToVerify(User user);
 
     boolean isEmailTaken(String email);
 

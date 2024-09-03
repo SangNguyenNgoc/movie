@@ -45,7 +45,7 @@ logging:
 
 
 client:
-  client-id: public-client
+  client-id: web-client
   redirect-uris:
   - http://127.0.0.1:8080/authorized
   - https://oauth.pstmn.io/v1/callback
@@ -69,8 +69,8 @@ url:
   base-url: http://localhost:${server.port}
   login-page-url: /auth/login
   login-url: /login
-  register-page-url: /auth/register
-  registered-url: /auth/registered
+  verify-url: /auth/verify
+  register-page-url: /auth/register #fe's url
   avatar: https://cdn.discordapp.com/attachments/1168144426141499412/1169264779769155594/c6e56503cfdd87da299f72dc416023d4.jpg?ex=66a2512f&is=66a0ffaf&hm=a7dfbd6f1d504be1302857abc0dcb2abc9f8f03741eb92319d5c2dcc2d1f7184&
 
 vn_pay:

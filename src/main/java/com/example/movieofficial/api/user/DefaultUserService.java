@@ -7,24 +7,32 @@ import com.example.movieofficial.api.user.entities.Gender;
 import com.example.movieofficial.api.user.entities.Role;
 import com.example.movieofficial.api.user.entities.User;
 import com.example.movieofficial.api.user.exceptions.RoleNotFoundException;
-import com.example.movieofficial.api.user.exceptions.UnauthorizedException;
 import com.example.movieofficial.api.user.exceptions.UserNotFoundException;
 import com.example.movieofficial.api.user.interfaces.RoleRepository;
 import com.example.movieofficial.api.user.interfaces.UserMapper;
 import com.example.movieofficial.api.user.interfaces.UserRepository;
 import com.example.movieofficial.api.user.interfaces.UserService;
+import com.example.movieofficial.utils.exceptions.AppException;
+import com.example.movieofficial.utils.exceptions.InputInvalidException;
 import com.example.movieofficial.utils.services.AuthorizationCodeService;
+import com.example.movieofficial.utils.services.MailService;
+import com.example.movieofficial.utils.services.ObjectsValidator;
 import com.example.movieofficial.utils.services.TokenService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.UriComponentsBuilder;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,24 +42,38 @@ import java.util.stream.Collectors;
 public class DefaultUserService implements UserService {
 
     private final UserRepository userRepository;
-
     private final RoleRepository roleRepository;
-
     private final TokenService tokenService;
-
     private final AuthorizationCodeService authorizationCodeService;
-
     private final UserMapper userMapper;
-
     private final PasswordEncoder passwordEncoder;
+    private final ObjectsValidator<RegisterRequest> registerValidator;
+    private final TemplateEngine templateEngine;
+    private final MailService mailService;
 
     @Value("${url.avatar}")
     private String baseAvatar;
 
+    @Value("${url.base-url}")
+    private String baseUri;
+
+    @Value("${url.verify-url}")
+    private String verifyUrl;
+
     @Override
-    public void register(RegisterRequest registerRequest) {
+    public String register(RegisterRequest registerRequest) {
+        registerValidator.validate(registerRequest);
+
+        if(isEmailTaken(registerRequest.getEmail())) {
+            throw new AppException("Email taken!", HttpStatus.CONFLICT, List.of("Email already exists"));
+        }
+
+        if(!isPasswordConfirmed(registerRequest)) {
+            throw new InputInvalidException("Invalid confirming password", List.of("Invalid confirming password"));
+        }
+
         Role role = roleRepository.findById(3L).orElseThrow(
-                () -> new RoleNotFoundException("Server error", List.of("Server error"))
+                () -> new RoleNotFoundException("Server error", List.of("Role not found"))
         );
         User user = User.builder()
                 .email(registerRequest.getEmail())
@@ -63,17 +85,22 @@ public class DefaultUserService implements UserService {
                 .avatar(baseAvatar)
                 .build();
         userRepository.save(user);
-        //TODO: send Email
+        sendToVerify(user);
+        return "Success";
     }
 
     @Override
     @Transactional
-    public Map<String, Object> verify(String token) {
+    public URI verify(String token) {
         if (tokenService.isTokenExpired(token)) {
-            throw new JwtException("Token is expired");
+            return UriComponentsBuilder.fromUriString(baseUri)
+                    .path("/redirect") // /redirect to client page to handler, fe will get parameter and call token from be
+                    .queryParam("expired_url", true)
+                    .build()
+                    .toUri();
         }
         String userId = tokenService.extractSubject(token);
-        User user = userRepository.findByIdAndVerifyFalse(UUID.fromString(userId)).orElseThrow(
+        User user = userRepository.findByIdAndVerifyFalse(userId).orElseThrow(
                 () -> new UsernameNotFoundException("User not found"));
         Role role = roleRepository.findById(2L).orElseThrow(
                 () -> new RoleNotFoundException("Server error", List.of("Server error"))
@@ -83,12 +110,39 @@ public class DefaultUserService implements UserService {
         try {
             String codeVerified = authorizationCodeService.generateCodeVerifier();
             String authCode = authorizationCodeService.generateAuthorizationCode(user, codeVerified).getTokenValue();
-            Map<String, Object> param = new HashMap<>();
-            param.put("codeVerified", codeVerified);
-            param.put("authorizationCode", authCode);
-            return param;
+            return UriComponentsBuilder.fromUriString(baseUri)
+                    .path("/redirect") // /redirect to client page to handler, fe will get parameter and call token from be
+                    .queryParam("code", codeVerified)
+                    .queryParam("code_verified", authCode)
+                    .build()
+                    .toUri();
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Lỗi không xác định.");
+            throw new AppException("Server error.", HttpStatus.INTERNAL_SERVER_ERROR, List.of("Internal server error"));
+        }
+    }
+
+    @Override
+    public String sendToVerify(String email) {
+        User user = userRepository.findByEmailAndVerifyFalse(email).orElseThrow(
+                () -> new UserNotFoundException("Not found", List.of("User not found"))
+        );
+        sendToVerify(user);
+        return "Success";
+    }
+
+    @Override
+    public void sendToVerify(User user) {
+        try {
+            String verifyToken = tokenService.generateVerifyToken(user);
+            Context context = new Context();
+            context.setVariables(Map.of(
+                    "name", user.getFullName(),
+                    "url", baseUri + verifyUrl + "?t=" + verifyToken
+            ));
+            String text = templateEngine.process("mail/mail-template", context);
+            mailService.sendEmailHtml(user.getEmail(), "Xác minh địa chỉ email của bạn", text);
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            System.out.println(e.getMessage());
         }
     }
 

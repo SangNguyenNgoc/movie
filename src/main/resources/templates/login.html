@@ -39,13 +39,13 @@
                 >
                 <div class="w-full h-[1px] bg-placeHolder"></div>
             </div>
+            <div class="mt-1 w-full font-comfortaa flex justify-start text-[12px] text-red-800" th:if="${error}">* Đăng nhập thất bại: sai tên tài khoản hoặc mật khẩu.</div>
             <div class="mt-4 w-full flex justify-end items-end">
                 <label class="block text-[13px] text-notice font-bold font-comfortaa mb-4 cursor-pointer">
                     Quên mật khẩu
                 </label>
             </div>
             <button type="submit" class="text-white text-[15px] w-[160px] horizontal-line rounded-3xl font-inter font-semibold">Đăng nhập</button>
-            <div class="mt-1 font-comfortaa text-[12px] text-red-800" th:if="${error}">* Đăng nhập thất bại: sai tên tài khoản hoặc mật khẩu.</div>
             <div class="mt-4 w-full flex justify-center items-center space-x-2">
                 <label class="block text-[12px] text-white font-bold font-comfortaa mb-4">Chưa có tài khoản?</label>
                 <label class="block text-[12px] text-primary font-bold font-comfortaa mb-4 cursor-pointer">
