@@ -1,6 +1,6 @@
 package com.example.movieofficial.config;
 
-import com.example.movieofficial.api.user.CustomAuthenticationFailureHandler;
+import com.example.movieofficial.api.user.auth.CustomAuthenticationFailureHandler;
 import com.example.movieofficial.utils.auditing.ApplicationAuditAware;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

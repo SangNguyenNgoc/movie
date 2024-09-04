@@ -2,31 +2,30 @@ package com.example.movieofficial.api.movie.dtos;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 /**
  * DTO for {@link com.example.movieofficial.api.movie.entities.Movie}
  */
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class MovieInfoLanding implements Serializable {
+public class MovieInfoLanding extends RepresentationModel<MovieInfoLanding> implements Serializable {
     String id;
     String name;
     String subName;
-    String description;
-    Date releaseDate;
-    String language;
+    LocalDate releaseDate;
     Integer numberOfRatings;
     Integer sumOfRatings;
     String poster;
-    String horizontalPoster;
-    String trailer;
     String slug;
     Integer ageRestriction;
     Set<FormatDto> formats;

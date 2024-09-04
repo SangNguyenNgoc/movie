@@ -1,9 +1,8 @@
 package com.example.movieofficial.api.movie.dtos;
 
 import com.example.movieofficial.api.cinema.dtos.CinemaAndShows;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -12,10 +11,11 @@ import java.util.List;
 /**
  * DTO for {@link com.example.movieofficial.api.movie.entities.Movie}
  */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MovieDetail implements Serializable {
+public class MovieDetail extends RepresentationModel<MovieDetail> implements Serializable {
     private String id;
     private String name;
     private String subName;

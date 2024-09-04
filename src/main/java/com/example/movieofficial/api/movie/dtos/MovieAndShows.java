@@ -1,8 +1,7 @@
 package com.example.movieofficial.api.movie.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -19,6 +18,7 @@ public class MovieAndShows implements Serializable {
     private String id;
     private String name;
     private String subName;
+    private String slug;
     private LocalDate releaseDate;
     private Integer runningTime;
     private Integer numberOfRatings;
@@ -31,10 +31,11 @@ public class MovieAndShows implements Serializable {
     /**
      * DTO for {@link com.example.movieofficial.api.show.entities.Show}
      */
-    @Data
+    @Getter
+    @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class ShowDto implements Serializable {
+    public static class ShowDto extends RepresentationModel<ShowDto> implements Serializable {
         private String id;
         private LocalDate startDate;
         private LocalTime startTime;

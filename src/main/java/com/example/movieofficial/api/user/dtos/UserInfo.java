@@ -1,9 +1,8 @@
 package com.example.movieofficial.api.user.dtos;
 
 import com.example.movieofficial.api.user.entities.Gender;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -13,13 +12,14 @@ import java.util.UUID;
 /**
  * DTO for {@link com.example.movieofficial.api.user.entities.User}
  */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfo implements Serializable {
+public class UserInfo extends RepresentationModel<UserInfo> implements Serializable {
     private LocalDateTime createDate;
     private LocalDateTime lastModifiedDate;
-    private UUID id;
+    private String id;
     private String fullName;
     private String email;
     private Date dateOfBirth;

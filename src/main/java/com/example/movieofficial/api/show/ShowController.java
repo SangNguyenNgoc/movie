@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class ShowController {
 
     private final ShowService showService;
+    private final ShowModelAssembler showAssembler;
 
 
     @Operation(
@@ -92,6 +93,8 @@ public class ShowController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<ShowDetail> getShowDetail(@PathVariable String id) {
-        return ResponseEntity.ok(showService.getShowDetail(id));
+        var showDetail = showService.getShowDetail(id);
+        showAssembler.linkToCreateBill(showDetail);
+        return ResponseEntity.ok(showDetail);
     }
 }

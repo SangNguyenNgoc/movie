@@ -1,21 +1,22 @@
 package com.example.movieofficial.api.movie.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
  * DTO for {@link com.example.movieofficial.api.movie.entities.Movie}
  */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MovieInfoAdmin implements Serializable {
+public class MovieInfoAdmin extends RepresentationModel<MovieInfoAdmin> implements Serializable {
     private LocalDateTime createDate;
     private LocalDateTime lastModifiedDate;
     private String createBy;
@@ -25,8 +26,8 @@ public class MovieInfoAdmin implements Serializable {
     private String subName;
     private String director;
     private String performers;
-    private Date releaseDate;
-    private Date endDate;
+    private LocalDate releaseDate;
+    private LocalDate endDate;
     private Integer runningTime;
     private String language;
     private Integer numberOfRatings;

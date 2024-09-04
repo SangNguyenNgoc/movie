@@ -1,4 +1,4 @@
-package com.example.movieofficial.api.user;
+package com.example.movieofficial.api.user.auth;
 
 import com.example.movieofficial.api.user.interfaces.UserService;
 import lombok.RequiredArgsConstructor;

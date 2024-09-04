@@ -1,4 +1,4 @@
-package com.example.movieofficial.api.user;
+package com.example.movieofficial.api.user.auth;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

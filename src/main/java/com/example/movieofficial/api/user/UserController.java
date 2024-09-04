@@ -13,12 +13,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 
 @RestController
@@ -27,6 +30,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserModelAssembler userAssembler;
 
     @Operation(
             summary = "Register a new user",
@@ -89,8 +93,13 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<UserProfile> getProfile(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
+        var profile = userService.getProfile(token);
+        profile.add(linkTo(UserController.class)
+                .slash("/profile")
+                .withSelfRel()
+                .withType(HttpMethod.GET.name()));
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.getProfile(token));
+                .body(profile);
     }
 
 
@@ -123,9 +132,11 @@ public class UserController {
             @RequestParam("size") Integer size
     ) {
         List<UserInfo> result = userService.getAll(page - 1, size);
+        result.forEach(userAssembler::linkToGetUserInfo);
         var response = ListResponse.<UserInfo>builder()
                 .data(result)
                 .build();
+        response.add(linkTo(UserController.class).withSelfRel().withType(HttpMethod.GET.name()));
         return ResponseEntity.ok(response);
     }
 
@@ -201,9 +212,41 @@ public class UserController {
             @RequestParam("size") Integer size
     ) {
         List<UserInfo> result = userService.getByRole(id, page - 1, size);
+        result.forEach(userAssembler::linkToGetUserInfo);
         var response = ListResponse.<UserInfo>builder()
                 .data(result)
                 .build();
+        response.add(linkTo(UserController.class)
+                .slash("/role")
+                .withSelfRel()
+                .withType(HttpMethod.GET.name()));
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Send Verification Email",
+            description = "Sends an email containing a verification URL to the user's email address. " +
+                    "Use this endpoint to request a verification email when a new user registers or when a re-verification is requested."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Sending url to email successfully",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request parameters. The `email` parameters are incorrect.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "User not found. User with email address not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+    })
+    @GetMapping("/verification-email")
+    public ResponseEntity<String> sendUrlToVerify(@RequestParam("email") String email) {
+        return ResponseEntity.ok(userService.sendToVerify(email));
     }
 }

@@ -1,11 +1,15 @@
 package com.example.movieofficial.utils.dtos;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
-@Data
-public class ListResponse<T> {
+@Getter
+@Setter
+public class ListResponse<T> extends RepresentationModel<ListResponse<T>> {
 
     private Long size;
     private List<T> data;

@@ -12,11 +12,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/v1/movies")
@@ -24,6 +28,7 @@ import java.util.List;
 public class MovieController {
 
     private final MovieService movieService;
+    private final MovieModelAssembler movieAssembler;
 
     @Operation(
             summary = "Get movies to landing page",
@@ -31,8 +36,20 @@ public class MovieController {
                     "the movies are categorized by status coming soon or showing now"
     )
     @GetMapping("/home")
-    public ResponseEntity<List<StatusInfo>> getMoviesToLanding() {
-        return ResponseEntity.ok(movieService.getMovieToLandingFromRedis());
+    public ResponseEntity<ListResponse<StatusInfo>> getMoviesToLanding() {
+        List<StatusInfo> statusInfoList = movieService.getMovieToLandingFromRedis();
+        statusInfoList.forEach(statusInfo -> {
+            movieAssembler.linkToGetMovieStatus(statusInfo);
+            statusInfo.getMovies().forEach(movieAssembler::linkToGetMovieDetail);
+        });
+        var response = ListResponse.<StatusInfo>builder()
+                .data(statusInfoList)
+                .build();
+        response.add(linkTo(methodOn(MovieController.class)
+                .getMoviesToLanding())
+                .withSelfRel()
+                .withType(HttpMethod.GET.name()));
+        return ResponseEntity.ok(response);
     }
 
 
@@ -46,9 +63,14 @@ public class MovieController {
             @RequestParam("size") Integer size
     ) {
         List<MovieInfoLanding> result = movieService.getMoviesByStatusFromRedis("showing-now", page - 1, size);
+        result.forEach(movieAssembler::linkToGetMovieDetail);
         var response = ListResponse.<MovieInfoLanding>builder()
                 .data(result)
                 .build();
+        response.add(linkTo(MovieController.class)
+                .slash("showing-now")
+                .withSelfRel()
+                .withType(HttpMethod.GET.name()));
         return ResponseEntity.ok(response);
     }
 
@@ -63,9 +85,14 @@ public class MovieController {
             @RequestParam("size") Integer size
     ) {
         List<MovieInfoLanding> result = movieService.getMoviesByStatusFromRedis("coming-soon", page - 1, size);
+        result.forEach(movieAssembler::linkToGetMovieDetail);
         var response = ListResponse.<MovieInfoLanding>builder()
                 .data(result)
                 .build();
+        response.add(linkTo(MovieController.class)
+                .slash("coming-soon")
+                .withSelfRel()
+                .withType(HttpMethod.GET.name()));
         return ResponseEntity.ok(response);
     }
 
@@ -98,9 +125,11 @@ public class MovieController {
             @RequestParam("size") Integer size
     ) {
         List<MovieInfoAdmin> result = movieService.getAll(page - 1, size);
+        result.forEach(movieAssembler::linkToGetMovieInfoAdmin);
         var response = ListResponse.<MovieInfoAdmin>builder()
                 .data(result)
                 .build();
+        response.add(linkTo(MovieController.class).withSelfRel().withType(HttpMethod.GET.name()));
         return ResponseEntity.ok(response);
     }
 
@@ -152,7 +181,9 @@ public class MovieController {
     })
     @GetMapping("/{slug}/shows")
     public ResponseEntity<MovieDetail> getMovieDetail(@PathVariable String slug) {
-        return ResponseEntity.ok(movieService.getMovieAndShowsFromRedis(slug));
+        MovieDetail result = movieService.getMovieAndShowsFromRedis(slug);
+        movieAssembler.linkToGetShowDetail(result);
+        return ResponseEntity.ok(result);
     }
 
 }

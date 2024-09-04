@@ -80,7 +80,7 @@ public class DefaultBillService implements BillService {
 
         String billId = tokenService.getRandomNumber(12);
         String paymentUrl = vnPayService.doPost(totalPrice, billId);
-        Bill newBill = Bill.builder()
+        var newBill = Bill.builder()
                 .id(billId)
                 .total(totalPrice)
                 .user(user)
