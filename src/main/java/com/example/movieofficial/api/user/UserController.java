@@ -2,6 +2,7 @@ package com.example.movieofficial.api.user;
 
 import com.example.movieofficial.api.user.dtos.RegisterRequest;
 import com.example.movieofficial.api.user.dtos.UserInfo;
+import com.example.movieofficial.api.user.dtos.UserInfoUpdate;
 import com.example.movieofficial.api.user.dtos.UserProfile;
 import com.example.movieofficial.api.user.interfaces.UserService;
 import com.example.movieofficial.utils.dtos.ListResponse;
@@ -14,10 +15,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class UserController {
 
 
     @Operation(
-            summary = "Fetch User Profile",
+            summary = "Retrieve user profile",
             description = "This endpoint allows authenticated users to view their profile information. " +
                     "Access is restricted to authorized users. " +
                     "The request must include a valid Bearer token in the Authorization header.",
@@ -92,14 +93,10 @@ public class UserController {
     @GetMapping("/profile")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<UserProfile> getProfile(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
+        var token = request.getHeader("Authorization");
         var profile = userService.getProfile(token);
-        profile.add(linkTo(UserController.class)
-                .slash("/profile")
-                .withSelfRel()
-                .withType(HttpMethod.GET.name()));
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(profile);
+        userAssembler.linkToCrudUser(profile);
+        return ResponseEntity.ok(profile);
     }
 
 
@@ -173,7 +170,9 @@ public class UserController {
     public ResponseEntity<UserInfo> getById(
             @PathVariable("id") String id
     ) {
-        return ResponseEntity.ok(userService.getById(id));
+        var result = userService.getById(id);
+        userAssembler.linkToGetAllUser(result);
+        return ResponseEntity.ok(result);
     }
 
 
@@ -223,8 +222,9 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+
     @Operation(
-            summary = "Send Verification Email",
+            summary = "Send verification email",
             description = "Sends an email containing a verification URL to the user's email address. " +
                     "Use this endpoint to request a verification email when a new user registers or when a re-verification is requested."
     )
@@ -249,4 +249,76 @@ public class UserController {
     public ResponseEntity<String> sendUrlToVerify(@RequestParam("email") String email) {
         return ResponseEntity.ok(userService.sendToVerify(email));
     }
+
+
+    @Operation(
+            summary = "Update user information",
+            description = "This API endpoint allows users to update their information. " +
+                    "The information that can be changed includes: `fullName`, `phoneNumber`, `gender`, `dateOfBirth`.",
+            security = @SecurityRequirement(name = "Bearer Authentication")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Updating user information successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserProfile.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request parameters.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "User not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+    })
+    @PutMapping("/information")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<UserProfile> updateInfo(
+            @RequestBody UserInfoUpdate update,
+            HttpServletRequest request
+    ) {
+        var token = request.getHeader("Authorization");
+        var profile = userService.updateInfo(update, token);
+        userAssembler.linkToCrudUser(profile);
+        return ResponseEntity.ok(profile);
+    }
+
+
+    @Operation(
+            summary = "Update user avatar",
+            description = "This API endpoint allows users to update their avatar.",
+            security = @SecurityRequirement(name = "Bearer Authentication")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Updating user avatar successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserProfile.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request parameters.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "User not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+    })
+    @PutMapping("/avatar")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<UserProfile> updateAvatar(
+            @RequestParam(value = "avatar") MultipartFile image,
+            HttpServletRequest request
+    ) {
+        var token = request.getHeader("Authorization");
+        var profile = userService.updateAvatar(image, token);
+        userAssembler.linkToCrudUser(profile);
+        return ResponseEntity.ok(profile);
+    }
+
 }

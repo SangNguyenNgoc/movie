@@ -2,8 +2,10 @@ package com.example.movieofficial.api.user.interfaces;
 
 import com.example.movieofficial.api.user.dtos.RegisterRequest;
 import com.example.movieofficial.api.user.dtos.UserInfo;
+import com.example.movieofficial.api.user.dtos.UserInfoUpdate;
 import com.example.movieofficial.api.user.dtos.UserProfile;
 import com.example.movieofficial.api.user.entities.User;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.util.List;
@@ -30,4 +32,7 @@ public interface UserService {
 
     List<UserInfo> getByRole(Integer id, Integer page, Integer size);
 
+    UserProfile updateInfo(UserInfoUpdate update, String token);
+
+    UserProfile updateAvatar(MultipartFile image, String token);
 }

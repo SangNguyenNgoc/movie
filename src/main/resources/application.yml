@@ -80,3 +80,8 @@ vn_pay:
   key: CXQESZOFZ6RADCJ7B2794P6CW641LAOV
   time_out: 10
 
+s3client:
+  endpoint_url: ${ENDPOINT}
+  access_key: ${ACCESS_KEY}
+  secret_key: ${SECRET_KEY}
+  bucket_name: ${BUCKET_NAME}

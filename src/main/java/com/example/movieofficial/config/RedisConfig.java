@@ -23,13 +23,10 @@ public class RedisConfig {
 
     @Value("${spring.redis.host}")
     private String hostName;
-
     @Value("${spring.redis.port}")
     private Integer port;
-
     @Value("${spring.redis.sentinel.username}")
     private String userName;
-
     @Value("${spring.redis.sentinel.password}")
     private String password;
 

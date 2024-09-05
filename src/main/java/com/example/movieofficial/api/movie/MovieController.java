@@ -6,6 +6,7 @@ import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
 import com.example.movieofficial.api.movie.dtos.StatusInfo;
 import com.example.movieofficial.api.movie.interfaces.MovieService;
 import com.example.movieofficial.utils.dtos.ListResponse;
+import com.example.movieofficial.utils.services.S3Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class MovieController {
 
     private final MovieService movieService;
     private final MovieModelAssembler movieAssembler;
+    private final S3Service service;
 
     @Operation(
             summary = "Get movies to landing page",

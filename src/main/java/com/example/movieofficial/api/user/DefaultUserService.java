@@ -2,6 +2,7 @@ package com.example.movieofficial.api.user;
 
 import com.example.movieofficial.api.user.dtos.RegisterRequest;
 import com.example.movieofficial.api.user.dtos.UserInfo;
+import com.example.movieofficial.api.user.dtos.UserInfoUpdate;
 import com.example.movieofficial.api.user.dtos.UserProfile;
 import com.example.movieofficial.api.user.entities.Gender;
 import com.example.movieofficial.api.user.entities.Role;
@@ -14,10 +15,7 @@ import com.example.movieofficial.api.user.interfaces.UserRepository;
 import com.example.movieofficial.api.user.interfaces.UserService;
 import com.example.movieofficial.utils.exceptions.AppException;
 import com.example.movieofficial.utils.exceptions.InputInvalidException;
-import com.example.movieofficial.utils.services.AuthorizationCodeService;
-import com.example.movieofficial.utils.services.MailService;
-import com.example.movieofficial.utils.services.ObjectsValidator;
-import com.example.movieofficial.utils.services.TokenService;
+import com.example.movieofficial.utils.services.*;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -49,8 +48,10 @@ public class DefaultUserService implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final ObjectsValidator<RegisterRequest> registerValidator;
+    private final ObjectsValidator<UserInfoUpdate> userInfoUpdateValidator;
     private final TemplateEngine templateEngine;
     private final MailService mailService;
+    private final S3Service s3Service;
 
     @Value("${url.avatar}")
     private String baseAvatar;
@@ -187,5 +188,31 @@ public class DefaultUserService implements UserService {
         PageRequest pageable = PageRequest.of(page, size);
         List<User> users = userRepository.findByRoleIdOrderByCreateDateDesc(id, pageable);
         return users.stream().map(userMapper::toUserInfo).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public UserProfile updateInfo(UserInfoUpdate update, String token) {
+        userInfoUpdateValidator.validate(update);
+        User user = getByToken(token);
+        User updatedUser = userMapper.partialUpdate(update, user);
+        return userMapper.toProfile(updatedUser);
+    }
+
+    @Override
+    @Transactional
+    public UserProfile updateAvatar(MultipartFile image, String token) {
+        User user = getByToken(token);
+        String url = s3Service.uploadFile(image, user.getId(), "avatar");
+        user.setAvatar(url);
+        return userMapper.toProfile(user);
+    }
+
+    private User getByToken(String token) {
+        token = tokenService.validateTokenBearer(token);
+        String userId = tokenService.extractSubject(token);
+        return userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException("Not found", List.of("User not found"))
+        );
     }
 }
