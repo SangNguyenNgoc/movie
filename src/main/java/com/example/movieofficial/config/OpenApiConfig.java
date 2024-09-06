@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
@@ -29,8 +31,8 @@ import org.springframework.context.annotation.Configuration;
         ),
         servers = {
                 @Server(
-                        description = "Localhost",
-                        url = "http://localhost:8080"
+                        description = "api.pwer-dev.id.vn",
+                        url = "${customBaseUrl}"
                 )
         }
 )
@@ -57,5 +59,12 @@ import org.springframework.context.annotation.Configuration;
         )
 )
 public class OpenApiConfig {
+    @Value("${url.base-url}")
+    private String baseUrl;
+
+    @PostConstruct
+    public void init() {
+        System.setProperty("customBaseUrl", baseUrl);
+    }
 }
 

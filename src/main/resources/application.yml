@@ -47,10 +47,10 @@ logging:
 client:
   client-id: web-client
   redirect-uris:
-    - http://127.0.0.1:8080/authorized
-    - https://oauth.pstmn.io/v1/callback
-    - http://127.0.0.1:3000
-    - http://localhost:8080/swagger-ui/oauth2-redirect.html
+    - ${SSL}://${DOMAIN}/authorized
+    - ${SSL}://oauth.pstmn.io/v1/callback
+    - ${SSL}://${DOMAIN}
+    - ${SSL}://${DOMAIN}/swagger-ui/oauth2-redirect.html
   settings:
     require-authorization-consent: false
     require-proof-key: true
@@ -66,7 +66,7 @@ token:
   access-token-time-to-live: 7
 
 url:
-  base-url: http://localhost:${server.port}
+  base-url: ${SSL}://${DOMAIN}
   login-page-url: /auth/login
   login-url: /login
   verify-url: /auth/verify
@@ -75,7 +75,7 @@ url:
 
 vn_pay:
   vn_pay_url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-  vn_pay_return_url: http://localhost:8080/api/v1/bills/payment
+  vn_pay_return_url: ${SSL}://${DOMAIN}/api/v1/bills/payment
   tmn_code: Z1FTHYFU
   key: CXQESZOFZ6RADCJ7B2794P6CW641LAOV
   time_out: 10
