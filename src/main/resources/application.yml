@@ -60,6 +60,7 @@ springdoc:
     oauth:
       client-id: ${client.client-id}
       use-pkce-with-authorization-code-grant: true
+    oauth2-redirect-url: ${SSL}://${DOMAIN}/swagger-ui/oauth2-redirect.html
 
 token:
   key-size: 2048
