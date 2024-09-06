@@ -45,8 +45,8 @@ import org.springframework.context.annotation.Configuration;
         in = SecuritySchemeIn.HEADER,
         flows = @OAuthFlows(
                 authorizationCode = @OAuthFlow(
-                        authorizationUrl = "http://localhost:8080/oauth2/authorize",
-                        tokenUrl = "http://localhost:8080/oauth2/token",
+                        authorizationUrl = "${customBaseUrl}/oauth2/authorize",
+                        tokenUrl = "${customBaseUrl}/oauth2/token",
                         scopes = {
                                 @OAuthScope(name = "openid", description = "openid"),
                         },
