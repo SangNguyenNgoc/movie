@@ -6,7 +6,7 @@ import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
 import com.example.movieofficial.api.movie.dtos.StatusInfo;
 import com.example.movieofficial.api.movie.interfaces.MovieService;
 import com.example.movieofficial.utils.dtos.ListResponse;
-import com.example.movieofficial.utils.services.S3Service;
+import com.example.movieofficial.utils.dtos.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,7 +17,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,7 +30,6 @@ public class MovieController {
 
     private final MovieService movieService;
     private final MovieModelAssembler movieAssembler;
-    private final S3Service service;
 
     @Operation(
             summary = "Get movies to landing page",
@@ -61,15 +59,11 @@ public class MovieController {
             description = "This API endpoint get showing now  movies to render in landing page. "
     )
     @GetMapping("/showing-now")
-    public ResponseEntity<ListResponse<MovieInfoLanding>> getMoviesShowingNow(
+    public ResponseEntity<PageResponse<MovieInfoLanding>> getMoviesShowingNow(
             @RequestParam("page") Integer page,
             @RequestParam("size") Integer size
     ) {
-        List<MovieInfoLanding> result = movieService.getMoviesByStatusFromRedis("showing-now", page - 1, size);
-        result.forEach(movieAssembler::linkToGetMovieDetail);
-        var response = ListResponse.<MovieInfoLanding>builder()
-                .data(result)
-                .build();
+        PageResponse<MovieInfoLanding> response = movieService.getMoviesByStatusFromRedis("showing-now", page - 1, size);
         response.add(linkTo(MovieController.class)
                 .slash("showing-now")
                 .withSelfRel()
@@ -83,15 +77,11 @@ public class MovieController {
             description = "This API endpoint get coming soon  movies to render in landing page. "
     )
     @GetMapping("/coming-soon")
-    public ResponseEntity<ListResponse<MovieInfoLanding>> getMoviesByComingSoon(
+    public ResponseEntity<PageResponse<MovieInfoLanding>> getMoviesByComingSoon(
             @RequestParam("page") Integer page,
             @RequestParam("size") Integer size
     ) {
-        List<MovieInfoLanding> result = movieService.getMoviesByStatusFromRedis("coming-soon", page - 1, size);
-        result.forEach(movieAssembler::linkToGetMovieDetail);
-        var response = ListResponse.<MovieInfoLanding>builder()
-                .data(result)
-                .build();
+        PageResponse<MovieInfoLanding> response = movieService.getMoviesByStatusFromRedis("coming-soon", page - 1, size);
         response.add(linkTo(MovieController.class)
                 .slash("coming-soon")
                 .withSelfRel()
@@ -123,15 +113,11 @@ public class MovieController {
     })
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<ListResponse<MovieInfoAdmin>> getAll(
+    public ResponseEntity<PageResponse<MovieInfoAdmin>> getAll(
             @RequestParam("page") Integer page,
             @RequestParam("size") Integer size
     ) {
-        List<MovieInfoAdmin> result = movieService.getAll(page - 1, size);
-        result.forEach(movieAssembler::linkToGetMovieInfoAdmin);
-        var response = ListResponse.<MovieInfoAdmin>builder()
-                .data(result)
-                .build();
+        PageResponse<MovieInfoAdmin> response = movieService.getAll(page - 1, size);
         response.add(linkTo(MovieController.class).withSelfRel().withType(HttpMethod.GET.name()));
         return ResponseEntity.ok(response);
     }

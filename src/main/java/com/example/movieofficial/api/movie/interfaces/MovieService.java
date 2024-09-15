@@ -4,6 +4,7 @@ import com.example.movieofficial.api.movie.dtos.MovieDetail;
 import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;
 import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
 import com.example.movieofficial.api.movie.dtos.StatusInfo;
+import com.example.movieofficial.utils.dtos.PageResponse;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.List;
@@ -16,9 +17,9 @@ public interface MovieService {
 
     List<MovieInfoLanding> getMoviesByStatus(String slug);
 
-    List<MovieInfoLanding> getMoviesByStatusFromRedis(String slug, Integer page, Integer size);
+    PageResponse<MovieInfoLanding> getMoviesByStatusFromRedis(String slug, Integer page, Integer size);
 
-    List<MovieInfoAdmin> getAll(Integer page, Integer size);
+    PageResponse<MovieInfoAdmin> getAll(Integer page, Integer size);
 
     MovieInfoAdmin getById(String id);
 

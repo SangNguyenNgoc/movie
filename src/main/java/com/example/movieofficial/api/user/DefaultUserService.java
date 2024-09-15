@@ -13,12 +13,14 @@ import com.example.movieofficial.api.user.interfaces.RoleRepository;
 import com.example.movieofficial.api.user.interfaces.UserMapper;
 import com.example.movieofficial.api.user.interfaces.UserRepository;
 import com.example.movieofficial.api.user.interfaces.UserService;
+import com.example.movieofficial.utils.dtos.PageResponse;
 import com.example.movieofficial.utils.exceptions.AppException;
 import com.example.movieofficial.utils.exceptions.InputInvalidException;
 import com.example.movieofficial.utils.services.*;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -169,10 +171,14 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public List<UserInfo> getAll(Integer page, Integer size) {
+    public PageResponse<UserInfo> getAll(Integer page, Integer size) {
         PageRequest pageable = PageRequest.of(page, size);
-        List<User> users = userRepository.findByOrderByCreateDateDesc(pageable);
-        return users.stream().map(userMapper::toUserInfo).collect(Collectors.toList());
+        Page<User> users = userRepository.findByOrderByCreateDateDesc(pageable);
+        var data = users.stream().map(userMapper::toUserInfo).collect(Collectors.toList());
+        return PageResponse.<UserInfo>builder()
+                .data(data)
+                .totalPages(users.getTotalPages())
+                .build();
     }
 
     @Override
@@ -184,10 +190,14 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public List<UserInfo> getByRole(Integer id, Integer page, Integer size) {
+    public PageResponse<UserInfo> getByRole(Integer id, Integer page, Integer size) {
         PageRequest pageable = PageRequest.of(page, size);
-        List<User> users = userRepository.findByRoleIdOrderByCreateDateDesc(id, pageable);
-        return users.stream().map(userMapper::toUserInfo).collect(Collectors.toList());
+        Page<User> users = userRepository.findByRoleIdOrderByCreateDateDesc(id, pageable);
+        var data = users.stream().map(userMapper::toUserInfo).collect(Collectors.toList());
+        return PageResponse.<UserInfo>builder()
+                .data(data)
+                .totalPages(users.getTotalPages())
+                .build();
     }
 
     @Override

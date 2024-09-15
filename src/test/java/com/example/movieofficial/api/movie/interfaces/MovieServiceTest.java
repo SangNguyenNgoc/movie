@@ -28,6 +28,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
@@ -110,11 +113,12 @@ class MovieServiceTest {
 
     @Test
     void getAll() {
+        var page = PageRequest.of(0, 5);
         Mockito.when(
                 movieRepository.findAllOrderByStatusIdAscCreateDateDesc(Mockito.any(Pageable.class))
-        ).thenReturn(movies);
+        ).thenReturn(new PageImpl<>(movies, page, movies.size()));
 
-        List<MovieInfoAdmin> result = movieService.getAll(0, 5);
+        List<MovieInfoAdmin> result = movieService.getAll(0, 5).getData();
 
         Assertions.assertThat(result).isNotEmpty();
         Assertions.assertThat(result.size()).isEqualTo(8);
@@ -124,7 +128,7 @@ class MovieServiceTest {
     void getById() {
         UUID uuid = UUID.randomUUID();
 
-        Mockito.when(movieRepository.findById(uuid.toString())).thenReturn(Optional.of(movies.get(0)));
+        Mockito.when(movieRepository.findById(uuid.toString())).thenReturn(Optional.of(movies.stream().toList().get(0)));
 
         MovieInfoAdmin result = movieService.getById(uuid.toString());
         Assertions.assertThat(result).isNotNull();
@@ -135,7 +139,7 @@ class MovieServiceTest {
     void getMovieAndShows() {
         Mockito.when(
                 movieRepository.findBySlug("paw-patrol-the-mighty-movie")
-        ).thenReturn(Optional.ofNullable(movies.get(6)));
+        ).thenReturn(Optional.ofNullable(movies.stream().toList().get(6)));
         Mockito.when(
                 cinemaRepository.findByStatusIdOrderByCreateDateAsc(
                         Mockito.anyString(),
@@ -163,7 +167,7 @@ class MovieServiceTest {
     void getAllMoviesAndShows() {
         Mockito.when(
                 movieRepository.findByStatusIdOrStatusIdOrderBySumOfRatingsDesc(Mockito.anyLong(), Mockito.anyLong())
-        ).thenReturn(movies.subList(0, 3));
+        ).thenReturn(movies.stream().toList().subList(0, 3));
         Mockito.when(
                 cinemaRepository.findByStatusIdOrderByCreateDateAsc(
                         Mockito.anyString(),

@@ -6,6 +6,7 @@ import com.example.movieofficial.api.user.dtos.UserInfoUpdate;
 import com.example.movieofficial.api.user.dtos.UserProfile;
 import com.example.movieofficial.api.user.interfaces.UserService;
 import com.example.movieofficial.utils.dtos.ListResponse;
+import com.example.movieofficial.utils.dtos.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -124,15 +125,11 @@ public class UserController {
     })
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<ListResponse<UserInfo>> getAll(
+    public ResponseEntity<PageResponse<UserInfo>> getAll(
             @RequestParam("page") Integer page,
             @RequestParam("size") Integer size
     ) {
-        List<UserInfo> result = userService.getAll(page - 1, size);
-        result.forEach(userAssembler::linkToGetUserInfo);
-        var response = ListResponse.<UserInfo>builder()
-                .data(result)
-                .build();
+        PageResponse<UserInfo> response = userService.getAll(page - 1, size);
         response.add(linkTo(UserController.class).withSelfRel().withType(HttpMethod.GET.name()));
         return ResponseEntity.ok(response);
     }
@@ -205,16 +202,12 @@ public class UserController {
     })
     @GetMapping("/role")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<ListResponse<UserInfo>> getByRole(
+    public ResponseEntity<PageResponse<UserInfo>> getByRole(
             @RequestParam("role") Integer id,
             @RequestParam("page") Integer page,
             @RequestParam("size") Integer size
     ) {
-        List<UserInfo> result = userService.getByRole(id, page - 1, size);
-        result.forEach(userAssembler::linkToGetUserInfo);
-        var response = ListResponse.<UserInfo>builder()
-                .data(result)
-                .build();
+        PageResponse<UserInfo> response = userService.getByRole(id, page - 1, size);
         response.add(linkTo(UserController.class)
                 .slash("/role")
                 .withSelfRel()

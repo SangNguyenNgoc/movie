@@ -28,6 +28,7 @@ public class MovieInfoLanding extends RepresentationModel<MovieInfoLanding> impl
     String poster;
     String slug;
     Integer ageRestriction;
+    String trailer;
     Set<FormatDto> formats;
     Set<GenreDto> genres;
 

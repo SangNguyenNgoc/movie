@@ -64,7 +64,7 @@ public class DefaultShowService implements ShowService {
         Format format = formatRepository.findById(formatId).orElseThrow(
                 () -> new DataNotFoundException("Data not found", List.of("Movie format not found"))
         );
-        if (!formatRepository.existsByIdAndMoviesId(formatId, UUID.fromString(movieId))) {
+        if (!formatRepository.existsByIdAndMoviesId(formatId, movieId)) {
             throw new DataNotFoundException(
                     "Data not found",
                     List.of("The movie is not shown in the format you requested")

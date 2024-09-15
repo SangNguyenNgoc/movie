@@ -52,7 +52,7 @@ class MovieRepositoryTest {
     @Test
     void findAllOrderByStatusIdAscCreateDateDesc() {
         Pageable pageable = PageRequest.of(0, 2);
-        List<Movie> comingSoon = movieRepository.findAllOrderByStatusIdAscCreateDateDesc(pageable);
+        List<Movie> comingSoon = movieRepository.findAllOrderByStatusIdAscCreateDateDesc(pageable).stream().toList();
         Assertions.assertThat(comingSoon).isNotEmpty();
         Assertions.assertThat(comingSoon.size()).isEqualTo(2);
         Assertions.assertThat(comingSoon).isSortedAccordingTo((movie1, movie2) -> {

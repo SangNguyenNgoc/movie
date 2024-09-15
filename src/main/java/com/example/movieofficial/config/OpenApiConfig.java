@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
         ),
         servers = {
                 @Server(
-                        description = "api.pwer-dev.id.vn",
+                        description = "${host}",
                         url = "${customBaseUrl}"
                 )
         }
@@ -62,9 +62,13 @@ public class OpenApiConfig {
     @Value("${url.base-url}")
     private String baseUrl;
 
+    @Value("${url.host}")
+    private String host;
+
     @PostConstruct
     public void init() {
         System.setProperty("customBaseUrl", baseUrl);
+        System.setProperty("host", host);
     }
 }
 

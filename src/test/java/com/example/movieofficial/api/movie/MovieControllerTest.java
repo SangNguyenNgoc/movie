@@ -5,6 +5,7 @@ import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;
 import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
 import com.example.movieofficial.api.movie.dtos.StatusInfo;
 import com.example.movieofficial.api.movie.interfaces.MovieService;
+import com.example.movieofficial.utils.dtos.PageResponse;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +19,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.notNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 
@@ -34,13 +38,20 @@ class MovieControllerTest {
     @MockBean
     private MovieService movieService;
 
+    @MockBean
+    private MovieModelAssembler assembler;
+
     @Test
     void getMoviesToLanding() throws Exception {
-        Mockito.when(movieService.getMovieToLandingFromRedis()).thenReturn(List.of(
+
+        var testData = List.of(
                 new StatusInfo(),
                 new StatusInfo(),
                 new StatusInfo()
-        ));
+        );
+        testData.forEach(item -> item.setMovies(new ArrayList<>()));
+
+        Mockito.when(movieService.getMovieToLandingFromRedis()).thenReturn(testData);
 
         ResultActions response = mockMvc.perform(get("/api/v1/movies/home"));
 
@@ -50,13 +61,17 @@ class MovieControllerTest {
 
     @Test
     void getMoviesShowingNow() throws Exception {
-        Mockito.when(movieService.getMoviesByStatusFromRedis("showing-now", 0, 5)).thenReturn(List.of(
-                new MovieInfoLanding(),
-                new MovieInfoLanding(),
-                new MovieInfoLanding(),
-                new MovieInfoLanding(),
-                new MovieInfoLanding()
-        ));
+        var testData = PageResponse.<MovieInfoLanding>builder()
+                .data(List.of(
+                        new MovieInfoLanding(),
+                        new MovieInfoLanding(),
+                        new MovieInfoLanding(),
+                        new MovieInfoLanding(),
+                        new MovieInfoLanding()
+                ))
+                .totalPages(10)
+                .build();
+        Mockito.when(movieService.getMoviesByStatusFromRedis("showing-now", 0, 5)).thenReturn(testData);
 
         ResultActions response = mockMvc.perform(get("/api/v1/movies/showing-now")
                 .param("page", "1")
@@ -68,13 +83,17 @@ class MovieControllerTest {
 
     @Test
     void getMoviesByComingSoon() throws Exception {
-        Mockito.when(movieService.getMoviesByStatusFromRedis("coming-soon", 0, 5)).thenReturn(List.of(
-                new MovieInfoLanding(),
-                new MovieInfoLanding(),
-                new MovieInfoLanding(),
-                new MovieInfoLanding(),
-                new MovieInfoLanding()
-        ));
+        var testData = PageResponse.<MovieInfoLanding>builder()
+                .data(List.of(
+                        new MovieInfoLanding(),
+                        new MovieInfoLanding(),
+                        new MovieInfoLanding(),
+                        new MovieInfoLanding(),
+                        new MovieInfoLanding()
+                ))
+                .totalPages(10)
+                .build();
+        Mockito.when(movieService.getMoviesByStatusFromRedis("coming-soon", 0, 5)).thenReturn(testData);
 
         ResultActions response = mockMvc.perform(get("/api/v1/movies/coming-soon")
                 .param("page", "1")
@@ -87,13 +106,19 @@ class MovieControllerTest {
 
     @Test
     void getAll() throws Exception {
-        Mockito.when(movieService.getAll(0, 5)).thenReturn(List.of(
-                new MovieInfoAdmin(),
-                new MovieInfoAdmin(),
-                new MovieInfoAdmin(),
-                new MovieInfoAdmin(),
-                new MovieInfoAdmin()
-        ));
+
+        var testData = PageResponse.<MovieInfoAdmin>builder()
+                .data(List.of(
+                        new MovieInfoAdmin(),
+                        new MovieInfoAdmin(),
+                        new MovieInfoAdmin(),
+                        new MovieInfoAdmin(),
+                        new MovieInfoAdmin()
+                ))
+                .totalPages(10)
+                .build();
+
+        Mockito.when(movieService.getAll(0, 5)).thenReturn(testData);
 
         ResultActions response = mockMvc.perform(get("/api/v1/movies")
                 .param("page", "1")

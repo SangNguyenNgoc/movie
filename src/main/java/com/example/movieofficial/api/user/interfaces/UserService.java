@@ -5,6 +5,8 @@ import com.example.movieofficial.api.user.dtos.UserInfo;
 import com.example.movieofficial.api.user.dtos.UserInfoUpdate;
 import com.example.movieofficial.api.user.dtos.UserProfile;
 import com.example.movieofficial.api.user.entities.User;
+import com.example.movieofficial.utils.dtos.PageResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
@@ -26,11 +28,11 @@ public interface UserService {
 
     UserProfile getProfile(String token);
 
-    List<UserInfo> getAll(Integer page, Integer size);
+    PageResponse<UserInfo> getAll(Integer page, Integer size);
 
     UserInfo getById(String id);
 
-    List<UserInfo> getByRole(Integer id, Integer page, Integer size);
+    PageResponse<UserInfo> getByRole(Integer id, Integer page, Integer size);
 
     UserProfile updateInfo(UserInfoUpdate update, String token);
 

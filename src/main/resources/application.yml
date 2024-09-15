@@ -47,10 +47,10 @@ logging:
 client:
   client-id: web-client
   redirect-uris:
-    - ${SSL}://${DOMAIN}/authorized
+    - ${url.base-url}/authorized
     - ${SSL}://oauth.pstmn.io/v1/callback
-    - ${SSL}://${DOMAIN}
-    - ${SSL}://${DOMAIN}/swagger-ui/oauth2-redirect.html
+    - ${url.base-url}
+    - ${url.base-url}/swagger-ui/oauth2-redirect.html
   settings:
     require-authorization-consent: false
     require-proof-key: true
@@ -67,6 +67,7 @@ token:
   access-token-time-to-live: 7
 
 url:
+  host: ${DOMAIN}
   base-url: ${SSL}://${DOMAIN}
   login-page-url: /auth/login
   login-url: /login
@@ -76,7 +77,7 @@ url:
 
 vn_pay:
   vn_pay_url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-  vn_pay_return_url: ${SSL}://${DOMAIN}/api/v1/bills/payment
+  vn_pay_return_url: ${url.base-url}/api/v1/bills/payment
   tmn_code: Z1FTHYFU
   key: CXQESZOFZ6RADCJ7B2794P6CW641LAOV
   time_out: 10
@@ -86,3 +87,4 @@ s3client:
   access_key: ${ACCESS_KEY}
   secret_key: ${SECRET_KEY}
   bucket_name: ${BUCKET_NAME}
+  region: ${REGION}

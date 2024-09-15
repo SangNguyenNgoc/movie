@@ -22,6 +22,8 @@ public class S3Config {
     private String accessKey;
     @Value("${s3client.secret_key}")
     private String secretKey;
+    @Value("${s3client.region}")
+    private String region;
 
     @Bean
     public S3Client s3Client() {
@@ -29,7 +31,7 @@ public class S3Config {
         log.info("Configuring S3 client with AWS SDK v2");
         return S3Client.builder()
                 .endpointOverride(URI.create(endpointUrl))
-                .region(Region.of("hcm"))
+                .region(Region.of(region))
                 .credentialsProvider(StaticCredentialsProvider.create(credentials))
                 .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(true).build())
                 .build();

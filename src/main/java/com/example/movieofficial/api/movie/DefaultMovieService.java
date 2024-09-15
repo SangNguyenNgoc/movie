@@ -15,12 +15,14 @@ import com.example.movieofficial.api.movie.interfaces.MovieRepository;
 import com.example.movieofficial.api.movie.interfaces.MovieService;
 import com.example.movieofficial.api.movie.interfaces.MovieStatusRepository;
 import com.example.movieofficial.api.show.interfaces.ShowMapper;
+import com.example.movieofficial.utils.dtos.PageResponse;
 import com.example.movieofficial.utils.exceptions.DataNotFoundException;
 import com.example.movieofficial.utils.services.RedisService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -86,7 +88,7 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
-    public List<MovieInfoLanding> getMoviesByStatusFromRedis(String slug, Integer page, Integer size) {
+    public PageResponse<MovieInfoLanding> getMoviesByStatusFromRedis(String slug, Integer page, Integer size) {
         List<MovieInfoLanding> movieInfoLandings = redisMovieInfo.getValue(slug, new TypeReference<List<MovieInfoLanding>>() {
         });
         if (movieInfoLandings == null) {
@@ -94,15 +96,23 @@ public class DefaultMovieService implements MovieService {
             redisMovieInfo.setValue(slug, movieInfoLandings);
         }
         int fromIndex = page * size;
-        int toIndex = Math.min(fromIndex + size, movieInfoLandings.size());
-        return movieInfoLandings.subList(fromIndex, toIndex);
+        int totalItem = movieInfoLandings.size();
+        int toIndex = Math.min(fromIndex + size, totalItem);
+        return PageResponse.<MovieInfoLanding>builder()
+                .data(movieInfoLandings.subList(fromIndex, toIndex))
+                .totalPages((totalItem + size - 1) / size)
+                .build();
     }
 
     @Override
-    public List<MovieInfoAdmin> getAll(Integer page, Integer size) {
+    public PageResponse<MovieInfoAdmin> getAll(Integer page, Integer size) {
         PageRequest pageable = PageRequest.of(page, size);
-        List<Movie> movies = movieRepository.findAllOrderByStatusIdAscCreateDateDesc(pageable);
-        return movies.stream().map(movieMapper::toInfoAdmin).collect(Collectors.toList());
+        Page<Movie> movies = movieRepository.findAllOrderByStatusIdAscCreateDateDesc(pageable);
+        var data = movies.stream().map(movieMapper::toInfoAdmin).collect(Collectors.toList());
+        return PageResponse.<MovieInfoAdmin>builder()
+                .data(data)
+                .totalPages(movies.getTotalPages())
+                .build();
     }
 
     @Override

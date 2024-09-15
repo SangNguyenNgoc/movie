@@ -1,6 +1,7 @@
 package com.example.movieofficial.api.movie.interfaces;
 
 import com.example.movieofficial.api.movie.entities.Movie;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,7 +18,7 @@ public interface MovieRepository extends JpaRepository<Movie, String> {
     List<Movie> findByStatusSlugOrderBySumOfRatingsDescReleaseDateAsc(String slug);
 
     @Query("select m from Movie m order by m.status.id, m.createDate DESC")
-    List<Movie> findAllOrderByStatusIdAscCreateDateDesc(Pageable pageable);
+    Page<Movie> findAllOrderByStatusIdAscCreateDateDesc(Pageable pageable);
 
     @Query("select m from Movie m " +
             "where m.status.id = ?1 or m.status.id = ?2 " +
