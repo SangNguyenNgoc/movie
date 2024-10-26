@@ -1,13 +1,13 @@
-package com.example.movieofficial.api.bill;
+package com.example.movieofficial.api.bill.services;
 
 import com.example.movieofficial.api.bill.dtos.BillCreate;
 import com.example.movieofficial.api.bill.dtos.BillDetail;
 import com.example.movieofficial.api.bill.entities.Bill;
 import com.example.movieofficial.api.bill.entities.BillStatus;
-import com.example.movieofficial.api.bill.interfaces.BillMapper;
-import com.example.movieofficial.api.bill.interfaces.BillRepository;
-import com.example.movieofficial.api.bill.interfaces.BillService;
-import com.example.movieofficial.api.bill.interfaces.BillStatusRepository;
+import com.example.movieofficial.api.bill.interfaces.mappers.BillMapper;
+import com.example.movieofficial.api.bill.interfaces.repositories.BillRepository;
+import com.example.movieofficial.api.bill.interfaces.services.BillService;
+import com.example.movieofficial.api.bill.interfaces.repositories.BillStatusRepository;
 import com.example.movieofficial.api.hall.entities.Hall;
 import com.example.movieofficial.api.hall.entities.Seat;
 import com.example.movieofficial.api.hall.interfaces.SeatRepository;
@@ -161,7 +161,7 @@ public class DefaultBillService implements BillService {
             bill.setPaymentAt(dateTime);
             return "Success";
         } else {
-            String message = getMessage(responseCode, transactionStatus);
+            String message = vnPayService.getMessage(responseCode, transactionStatus);
             bill.setFailureReason(message);
             bill.setFailureAt(dateTime);
             bill.setFailure(true);
@@ -169,32 +169,7 @@ public class DefaultBillService implements BillService {
         }
     }
 
-    public String getMessage(String responseCode, String transactionStatus) {
-        Map<String, String> responseCodeMessages = getStringStringMap();
-        if (responseCodeMessages.containsKey(responseCode)) {
-            return responseCodeMessages.get(transactionStatus);
-        }
-        if (transactionStatus.equals("01")) {
-            return "Chưa thanh toán";
-        } else {
-            return "Transaction Status invalid";
-        }
-    }
 
-    private Map<String, String> getStringStringMap() {
-        var responseCodeMessages = new HashMap<String, String>();
-        responseCodeMessages.put("09", "Thẻ/Tài khoản của khách hàng chưa đăng ký dịch vụ InternetBanking tại ngân hàng");
-        responseCodeMessages.put("10", "Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần");
-        responseCodeMessages.put("11", "Đã hết hạn chờ thanh toán. Xin quý khách vui lòng thực hiện lại giao dịch.");
-        responseCodeMessages.put("12", "Thẻ/Tài khoản của khách hàng bị khóa.");
-        responseCodeMessages.put("24", "Khách hàng hủy giao dịch.");
-        responseCodeMessages.put("51", "Tài khoản của quý khách không đủ số dư để thực hiện giao dịch.");
-        responseCodeMessages.put("65", "Tài khoản của Quý khách đã vượt quá hạn mức giao dịch trong ngày.");
-        responseCodeMessages.put("75", "Ngân hàng thanh toán đang bảo trì.");
-        responseCodeMessages.put("79", "KH nhập sai mật khẩu thanh toán quá số lần quy định. Xin quý khách vui lòng thực hiện lại giao dịch.");
-        responseCodeMessages.put("99", "Lỗi không xác định.");
-        return responseCodeMessages;
-    }
 
     @Override
     public List<BillDetail> getBillByUser(String token, Integer page, Integer size) {

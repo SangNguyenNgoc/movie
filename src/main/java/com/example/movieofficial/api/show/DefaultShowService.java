@@ -4,8 +4,8 @@ import com.example.movieofficial.api.hall.entities.Hall;
 import com.example.movieofficial.api.hall.interfaces.HallRepository;
 import com.example.movieofficial.api.movie.entities.Format;
 import com.example.movieofficial.api.movie.entities.Movie;
-import com.example.movieofficial.api.movie.interfaces.FormatRepository;
-import com.example.movieofficial.api.movie.interfaces.MovieRepository;
+import com.example.movieofficial.api.movie.interfaces.repositories.FormatRepository;
+import com.example.movieofficial.api.movie.interfaces.repositories.MovieRepository;
 import com.example.movieofficial.api.show.dtos.ShowCreate;
 import com.example.movieofficial.api.show.dtos.ShowDetail;
 import com.example.movieofficial.api.show.entities.Show;
@@ -29,7 +29,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

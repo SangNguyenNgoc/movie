@@ -34,7 +34,7 @@ public class CinemaAndShows implements Serializable {
         private LocalTime startTime;
         private Integer runningTime;
         private Boolean status;
-        private MovieAndShows.ShowDto.FormatDto format;
+        private CinemaAndShows.ShowDto.FormatDto format;
 
         /**
          * DTO for {@link com.example.movieofficial.api.movie.entities.Format}
@@ -46,6 +46,8 @@ public class CinemaAndShows implements Serializable {
             private Long id;
             private String caption;
             private String version;
+            private String slug;
+
         }
     }
 }

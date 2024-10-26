@@ -78,8 +78,8 @@ url:
 vn_pay:
   vn_pay_url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
   vn_pay_return_url: ${url.base-url}/api/v1/bills/payment
-  tmn_code: Z1FTHYFU
-  key: CXQESZOFZ6RADCJ7B2794P6CW641LAOV
+  tmn_code: ${TMN_CODE}
+  key: ${VNPAY_KEY}
   time_out: 10
 
 s3client:
@@ -88,3 +88,6 @@ s3client:
   secret_key: ${SECRET_KEY}
   bucket_name: ${BUCKET_NAME}
   region: ${REGION}
+
+show:
+  showing-before-day: 7

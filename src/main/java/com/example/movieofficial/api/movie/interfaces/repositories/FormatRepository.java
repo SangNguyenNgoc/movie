@@ -1,11 +1,9 @@
-package com.example.movieofficial.api.movie.interfaces;
+package com.example.movieofficial.api.movie.interfaces.repositories;
 
 import com.example.movieofficial.api.movie.entities.Format;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.UUID;
 
 @Repository
 public interface FormatRepository extends JpaRepository<Format, Long> {

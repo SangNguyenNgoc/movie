@@ -26,6 +26,7 @@ public class MovieInfoLanding extends RepresentationModel<MovieInfoLanding> impl
     Integer numberOfRatings;
     Integer sumOfRatings;
     String poster;
+    String horizontalPoster;
     String slug;
     Integer ageRestriction;
     String trailer;
@@ -44,6 +45,8 @@ public class MovieInfoLanding extends RepresentationModel<MovieInfoLanding> impl
         Long id;
         String caption;
         String version;
+        String slug;
+
     }
 
     /**

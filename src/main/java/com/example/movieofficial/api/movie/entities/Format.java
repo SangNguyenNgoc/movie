@@ -26,6 +26,9 @@ public class Format {
     @Column(name = "version", length = 20, nullable = false)
     private String version;
 
+    @Column(name = "slug", length = 20, nullable = false)
+    private String slug;
+
     @OneToMany(
             mappedBy = "format",
             fetch = FetchType.LAZY,

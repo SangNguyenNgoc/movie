@@ -59,7 +59,7 @@ public class S3Service {
                 .acl("public-read")
                 .build();
         PutObjectResponse response = s3Client.putObject(putObjectRequest, RequestBody.fromFile(file));
-        log.info("File uploaded successfully. ETag: " + response.eTag());
+        log.info("File uploaded successfully. ETag: {}", response.eTag());
     }
 
     public String uploadFile(MultipartFile multipartFile, String slug, String folder) {

@@ -17,6 +17,8 @@ public interface TicketRepository extends JpaRepository<Ticket, String> {
             order by t.seat.rowName, t.seat.rowIndex
             """)
     List<Ticket> findByShowIdOrderBySeatRowNameAscSeatRowIndexAsc(String id, LocalDateTime dateTime);
+    //Nếu vé còn thời hạn thanh toán và trạng thái chưa thanh toán hoặc đã thanh toán rồi thì tính ghế bận
+    //Nếu vé hết thời hạn thanh toán và trạng thái chưa thanh toán thì tính ghế trống
 
 
 }

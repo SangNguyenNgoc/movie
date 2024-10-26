@@ -53,6 +53,8 @@ public class MovieAndShows implements Serializable {
             private Long id;
             private String caption;
             private String version;
+            private String slug;
+
         }
     }
 }

@@ -56,6 +56,8 @@ public class MovieInfoAdmin extends RepresentationModel<MovieInfoAdmin> implemen
         private Long id;
         private String caption;
         private String version;
+        private String slug;
+
     }
 
     /**

@@ -4,7 +4,7 @@ import com.example.movieofficial.api.movie.dtos.MovieDetail;
 import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;
 import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
 import com.example.movieofficial.api.movie.dtos.StatusInfo;
-import com.example.movieofficial.api.movie.interfaces.MovieService;
+import com.example.movieofficial.api.movie.interfaces.services.MovieService;
 import com.example.movieofficial.utils.dtos.PageResponse;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
@@ -22,8 +22,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.notNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 

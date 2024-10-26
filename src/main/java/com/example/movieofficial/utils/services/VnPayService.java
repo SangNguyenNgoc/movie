@@ -97,4 +97,31 @@ public class VnPayService {
 
         return vnp_Params;
     }
+
+    public String getMessage(String responseCode, String transactionStatus) {
+        Map<String, String> responseCodeMessages = getStringStringMap();
+        if (responseCodeMessages.containsKey(responseCode)) {
+            return responseCodeMessages.get(transactionStatus);
+        }
+        if (transactionStatus.equals("01")) {
+            return "Chưa thanh toán";
+        } else {
+            return "Transaction Status invalid";
+        }
+    }
+
+    private Map<String, String> getStringStringMap() {
+        var responseCodeMessages = new HashMap<String, String>();
+        responseCodeMessages.put("09", "Thẻ/Tài khoản của khách hàng chưa đăng ký dịch vụ InternetBanking tại ngân hàng");
+        responseCodeMessages.put("10", "Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần");
+        responseCodeMessages.put("11", "Đã hết hạn chờ thanh toán. Xin quý khách vui lòng thực hiện lại giao dịch.");
+        responseCodeMessages.put("12", "Thẻ/Tài khoản của khách hàng bị khóa.");
+        responseCodeMessages.put("24", "Khách hàng hủy giao dịch.");
+        responseCodeMessages.put("51", "Tài khoản của quý khách không đủ số dư để thực hiện giao dịch.");
+        responseCodeMessages.put("65", "Tài khoản của Quý khách đã vượt quá hạn mức giao dịch trong ngày.");
+        responseCodeMessages.put("75", "Ngân hàng thanh toán đang bảo trì.");
+        responseCodeMessages.put("79", "KH nhập sai mật khẩu thanh toán quá số lần quy định. Xin quý khách vui lòng thực hiện lại giao dịch.");
+        responseCodeMessages.put("99", "Lỗi không xác định.");
+        return responseCodeMessages;
+    }
 }

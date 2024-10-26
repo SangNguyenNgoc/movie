@@ -1,4 +1,4 @@
-package com.example.movieofficial.api.bill.interfaces;
+package com.example.movieofficial.api.bill.interfaces.repositories;
 
 import com.example.movieofficial.api.bill.entities.Bill;
 import org.springframework.data.domain.Pageable;

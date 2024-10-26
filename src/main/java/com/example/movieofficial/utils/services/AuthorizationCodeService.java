@@ -66,12 +66,7 @@ public class AuthorizationCodeService {
                 .build();
 
         OAuth2AuthorizationCode authorizationCode = null;
-        try {
-            authorizationCode = new OAuth2AuthorizationCode(
-                    generateCodeVerifier(), Instant.now(), Instant.now().plusSeconds(300));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        authorizationCode = new OAuth2AuthorizationCode(codeVerifier, Instant.now(), Instant.now().plusSeconds(300));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         UsernamePasswordAuthenticationToken authenticationToken =

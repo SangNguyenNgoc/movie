@@ -1,4 +1,4 @@
-package com.example.movieofficial.api.movie;
+package com.example.movieofficial.api.movie.services;
 
 import com.example.movieofficial.api.cinema.dtos.CinemaAndShows;
 import com.example.movieofficial.api.cinema.entities.Cinema;
@@ -10,18 +10,17 @@ import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
 import com.example.movieofficial.api.movie.dtos.StatusInfo;
 import com.example.movieofficial.api.movie.entities.Movie;
 import com.example.movieofficial.api.movie.entities.MovieStatus;
-import com.example.movieofficial.api.movie.interfaces.MovieMapper;
-import com.example.movieofficial.api.movie.interfaces.MovieRepository;
-import com.example.movieofficial.api.movie.interfaces.MovieService;
-import com.example.movieofficial.api.movie.interfaces.MovieStatusRepository;
+import com.example.movieofficial.api.movie.interfaces.mappers.MovieMapper;
+import com.example.movieofficial.api.movie.interfaces.repositories.MovieRepository;
+import com.example.movieofficial.api.movie.interfaces.services.MovieService;
+import com.example.movieofficial.api.movie.interfaces.repositories.MovieStatusRepository;
 import com.example.movieofficial.api.show.interfaces.ShowMapper;
 import com.example.movieofficial.utils.dtos.PageResponse;
 import com.example.movieofficial.utils.exceptions.DataNotFoundException;
 import com.example.movieofficial.utils.services.RedisService;
 import com.fasterxml.jackson.core.type.TypeReference;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
@@ -38,18 +37,20 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DefaultMovieService implements MovieService {
 
-    MovieStatusRepository movieStatusRepository;
-    MovieRepository movieRepository;
-    CinemaRepository cinemaRepository;
-    MovieMapper movieMapper;
-    CinemaMapper cinemaMapper;
-    ShowMapper showMapper;
-    RedisService<MovieDetail> redisMovieDetail;
-    RedisService<List<StatusInfo>> redisStatusInfo;
-    RedisService<List<MovieInfoLanding>> redisMovieInfo;
+    private final MovieStatusRepository movieStatusRepository;
+    private final MovieRepository movieRepository;
+    private final CinemaRepository cinemaRepository;
+    private final MovieMapper movieMapper;
+    private final CinemaMapper cinemaMapper;
+    private final ShowMapper showMapper;
+    private final RedisService<MovieDetail> redisMovieDetail;
+    private final RedisService<List<StatusInfo>> redisStatusInfo;
+    private final RedisService<List<MovieInfoLanding>> redisMovieInfo;
+
+    @Value("${show.showing-before-day}")
+    private Integer showBeforeDay;
 
     @Override
     public List<StatusInfo> getMovieToLanding() {
@@ -142,7 +143,7 @@ public class DefaultMovieService implements MovieService {
         List<Cinema> cinemas = cinemaRepository.findByStatusIdOrderByCreateDateAsc(
                 movie.getSlug(),
                 LocalDate.now(),
-                LocalDate.now().plusDays(3)
+                LocalDate.now().plusDays(showBeforeDay)
         );
         List<CinemaAndShows> cinemaAndShows = cinemas.stream()
                 .map(cinema -> {

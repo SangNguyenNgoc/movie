@@ -9,15 +9,14 @@ import com.example.movieofficial.api.cinema.interfaces.CinemaRepository;
 import com.example.movieofficial.api.cinema.interfaces.CinemaService;
 import com.example.movieofficial.api.movie.dtos.MovieAndShows;
 import com.example.movieofficial.api.movie.entities.Movie;
-import com.example.movieofficial.api.movie.interfaces.MovieMapper;
-import com.example.movieofficial.api.movie.interfaces.MovieRepository;
+import com.example.movieofficial.api.movie.interfaces.mappers.MovieMapper;
+import com.example.movieofficial.api.movie.interfaces.repositories.MovieRepository;
 import com.example.movieofficial.api.show.interfaces.ShowMapper;
 import com.example.movieofficial.utils.exceptions.DataNotFoundException;
 import com.example.movieofficial.utils.services.RedisService;
 import com.fasterxml.jackson.core.type.TypeReference;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
@@ -35,15 +34,17 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DefaultCinemaService implements CinemaService {
 
-    CinemaRepository cinemaRepository;
-    MovieRepository movieRepository;
-    CinemaMapper cinemaMapper;
-    MovieMapper movieMapper;
-    ShowMapper showMapper;
-    RedisService<List<CinemaDetail>> redisCinemaDetails;
+    private final CinemaRepository cinemaRepository;
+    private final MovieRepository movieRepository;
+    private final CinemaMapper cinemaMapper;
+    private final MovieMapper movieMapper;
+    private final ShowMapper showMapper;
+    private final RedisService<List<CinemaDetail>> redisCinemaDetails;
+
+    @Value("${show.showing-before-day}")
+    private Integer showBeforeDay;
 
     @Override
     public List<CinemaInfo> getAll() {
@@ -82,7 +83,7 @@ public class DefaultCinemaService implements CinemaService {
         List<Movie> movies = movieRepository.findByStatusIdOrStatusIdAndShowsOrderBySumOfRatingsDesc(
                 slug,
                 LocalDate.now(),
-                LocalDate.now().plusDays(3)
+                LocalDate.now().plusDays(showBeforeDay)
         );
         List<MovieAndShows> movieAndShows = movies.stream()
                 .map(movie -> {
@@ -104,7 +105,7 @@ public class DefaultCinemaService implements CinemaService {
         List<Cinema> cinemas = cinemaRepository.findByStatusId();
         List<Movie> movies = movieRepository.findByStatusIdOrStatusIdAndShowsOrderBySumOfRatingsDesc(
                 LocalDate.now(),
-                LocalDate.now().plusDays(3)
+                LocalDate.now().plusDays(7)
         );
         return cinemas.stream()
                 .map(cinema -> {

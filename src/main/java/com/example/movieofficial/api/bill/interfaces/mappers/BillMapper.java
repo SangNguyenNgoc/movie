@@ -1,4 +1,4 @@
-package com.example.movieofficial.api.bill.interfaces;
+package com.example.movieofficial.api.bill.interfaces.mappers;
 
 import com.example.movieofficial.api.bill.dtos.BillDetail;
 import com.example.movieofficial.api.bill.entities.Bill;

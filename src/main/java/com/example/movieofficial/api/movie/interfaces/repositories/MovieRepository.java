@@ -1,4 +1,4 @@
-package com.example.movieofficial.api.movie.interfaces;
+package com.example.movieofficial.api.movie.interfaces.repositories;
 
 import com.example.movieofficial.api.movie.entities.Movie;
 import org.springframework.data.domain.Page;

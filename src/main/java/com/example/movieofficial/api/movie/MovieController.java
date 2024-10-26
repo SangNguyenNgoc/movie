@@ -4,7 +4,7 @@ import com.example.movieofficial.api.movie.dtos.MovieDetail;
 import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;
 import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
 import com.example.movieofficial.api.movie.dtos.StatusInfo;
-import com.example.movieofficial.api.movie.interfaces.MovieService;
+import com.example.movieofficial.api.movie.interfaces.services.MovieService;
 import com.example.movieofficial.utils.dtos.ListResponse;
 import com.example.movieofficial.utils.dtos.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;

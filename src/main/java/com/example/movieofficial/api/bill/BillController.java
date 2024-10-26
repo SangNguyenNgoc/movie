@@ -2,7 +2,7 @@ package com.example.movieofficial.api.bill;
 
 import com.example.movieofficial.api.bill.dtos.BillCreate;
 import com.example.movieofficial.api.bill.dtos.BillDetail;
-import com.example.movieofficial.api.bill.interfaces.BillService;
+import com.example.movieofficial.api.bill.interfaces.services.BillService;
 import com.example.movieofficial.utils.dtos.ListResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;

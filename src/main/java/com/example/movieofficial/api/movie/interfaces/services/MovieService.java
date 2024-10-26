@@ -1,4 +1,4 @@
-package com.example.movieofficial.api.movie.interfaces;
+package com.example.movieofficial.api.movie.interfaces.services;
 
 import com.example.movieofficial.api.movie.dtos.MovieDetail;
 import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;

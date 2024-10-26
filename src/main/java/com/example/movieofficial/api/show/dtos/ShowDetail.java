@@ -26,6 +26,8 @@ public class ShowDetail extends RepresentationModel<ShowDetail> implements Seria
     private Boolean status;
     private MovieDto movie;
     private HallDto hall;
+    private FormatDto format;
+
 
     /**
      * DTO for {@link com.example.movieofficial.api.movie.entities.Movie}
@@ -83,5 +85,18 @@ public class ShowDetail extends RepresentationModel<ShowDetail> implements Seria
                 this.isReserved = false;
             }
         }
+    }
+
+    /**
+     * DTO for {@link com.example.movieofficial.api.movie.entities.Format}
+     */
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class FormatDto implements Serializable {
+        private Long id;
+        private String caption;
+        private String version;
+        private String slug;
     }
 }

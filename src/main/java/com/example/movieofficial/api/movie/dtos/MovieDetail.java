@@ -49,6 +49,8 @@ public class MovieDetail extends RepresentationModel<MovieDetail> implements Ser
         private Long id;
         private String caption;
         private String version;
+        private String slug;
+
     }
 
     /**
