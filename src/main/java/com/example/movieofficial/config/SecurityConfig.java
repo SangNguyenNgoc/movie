@@ -50,6 +50,7 @@ public class SecurityConfig {
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults())
                 .and()
+                .addFilterBefore(myCorsFilter, ChannelProcessingFilter.class)
                 .exceptionHandling((exceptions) -> exceptions
                         .defaultAuthenticationEntryPointFor(
                                 new CustomLoginUrl(loginPageUrl),

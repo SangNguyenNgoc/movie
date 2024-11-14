@@ -48,6 +48,7 @@ client:
   client-id: web-client
   redirect-uris:
     - ${url.base-url}/authorized
+    - ${SSL}://${FE_DOMAIN}/authorized
     - ${SSL}://oauth.pstmn.io/v1/callback
     - ${url.base-url}
     - ${url.base-url}/swagger-ui/oauth2-redirect.html
