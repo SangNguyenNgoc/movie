@@ -121,10 +121,11 @@ public class BillController {
     public ResponseEntity<ListResponse<BillDetail>> getBillByUser(
             HttpServletRequest request,
             @RequestParam("page") Integer page,
-            @RequestParam("size") Integer size
+            @RequestParam("size") Integer size,
+            @RequestParam("status") String status
     ) {
         String token = request.getHeader("Authorization");
-        List<BillDetail> billDetails = billService.getBillByUser(token, page - 1, size);
+        List<BillDetail> billDetails = billService.getBillByUser(token, page - 1, size, status);
         var response = ListResponse.<BillDetail>builder()
                 .data(billDetails)
                 .build();

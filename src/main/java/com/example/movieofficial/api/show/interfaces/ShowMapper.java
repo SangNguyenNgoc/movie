@@ -3,11 +3,12 @@ package com.example.movieofficial.api.show.interfaces;
 import com.example.movieofficial.api.bill.dtos.BillDetail;
 import com.example.movieofficial.api.cinema.dtos.CinemaAndShows;
 import com.example.movieofficial.api.hall.entities.Seat;
+import com.example.movieofficial.api.hall.entities.SeatRow;
 import com.example.movieofficial.api.movie.dtos.MovieAndShows;
 import com.example.movieofficial.api.show.dtos.ShowDetail;
 import com.example.movieofficial.api.show.entities.Show;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import com.example.movieofficial.api.show.dtos.ShowInfo;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface ShowMapper {
@@ -19,7 +20,9 @@ public interface ShowMapper {
     ShowDetail toDetail(Show show);
 
     @Mapping(source = "type.price", target = "price")
-    ShowDetail.HallDto.SeatDto seatToSeatDto(Seat seat);
+    SeatRow.SeatDto seatToSeatDto(Seat seat);
 
     BillDetail.TicketDto.ShowDto toShowInBillDetail(Show show);
+
+    ShowInfo toInfo(Show show);
 }

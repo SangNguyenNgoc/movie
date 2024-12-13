@@ -67,6 +67,7 @@ public class BillDetail implements Serializable {
             private Boolean status;
             private MovieDto movie;
             private TicketDto.SeatDto.HallDto hall;
+            private FormatDto format;
 
             /**
              * DTO for {@link com.example.movieofficial.api.movie.entities.Movie}
@@ -78,9 +79,23 @@ public class BillDetail implements Serializable {
                 private String id;
                 private String name;
                 private String subName;
+                private String poster;
+                private Integer ageRestriction;
                 private LocalDate releaseDate;
                 private LocalDate endDate;
                 private String slug;
+            }
+
+            /**
+             *  DTO for {@link com.example.movieofficial.api.movie.entities.Format}
+             */
+            @Data
+            @AllArgsConstructor
+            @NoArgsConstructor
+            public static class FormatDto implements Serializable {
+                private String id;
+                private String caption;
+                private String version;
             }
         }
 

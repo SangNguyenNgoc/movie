@@ -21,14 +21,14 @@ public class Seat extends AuditorEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "status", nullable = false)
-    private Boolean status;
+    @Column(name = "name", length = 3, nullable = true)
+    private String name;
 
-    @Column(name = "row_name", length = 1, nullable = false)
-    private String rowName;
+    @Column(name = "curr_row", nullable = false)
+    private Integer currRow; //currRow start at 1
 
-    @Column(name = "row_index", nullable = false)
-    private Integer rowIndex;
+    @Column(name = "curr_col", nullable = false)
+    private Integer currCol; //currCol start at 1
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(

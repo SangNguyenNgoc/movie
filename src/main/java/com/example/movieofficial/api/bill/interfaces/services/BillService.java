@@ -26,6 +26,6 @@ public interface BillService {
 
     String payment(String id, String responseCode, String transactionStatus, String paymentAt);
 
-    List<BillDetail> getBillByUser(String token, Integer page, Integer size);
+    List<BillDetail> getBillByUser(String token, Integer page, Integer size, String status);
 
 }

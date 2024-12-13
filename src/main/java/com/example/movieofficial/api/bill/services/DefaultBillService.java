@@ -35,9 +35,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -172,10 +170,10 @@ public class DefaultBillService implements BillService {
 
 
     @Override
-    public List<BillDetail> getBillByUser(String token, Integer page, Integer size) {
+    public List<BillDetail> getBillByUser(String token, Integer page, Integer size, String status) {
         User user = getUser(token);
         Pageable pageable = PageRequest.of(page, size);
-        List<Bill> bills = billRepository.findByUserIdOrderByCreateDateDesc(user.getId(), pageable);
+        List<Bill> bills = billRepository.findByUserIdOrderByCreateDateDesc(user.getId(), status, pageable);
         return bills.stream()
                 .map(bill -> {
                     BillDetail billDetail = billMapper.toDetail(bill);

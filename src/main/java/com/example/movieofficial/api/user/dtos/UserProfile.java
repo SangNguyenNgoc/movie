@@ -7,6 +7,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 /**
  * DTO for {@link User}
@@ -17,6 +18,7 @@ import java.sql.Date;
 @AllArgsConstructor
 public class UserProfile extends RepresentationModel<UserProfile> implements Serializable {
     private String id;
+    private LocalDateTime createDate;
     private String fullName;
     private String email;
     private Date dateOfBirth;

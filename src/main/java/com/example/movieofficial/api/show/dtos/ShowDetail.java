@@ -1,7 +1,9 @@
 package com.example.movieofficial.api.show.dtos;
 
 import com.example.movieofficial.api.hall.entities.Seat;
+import com.example.movieofficial.api.hall.entities.SeatRow;
 import com.example.movieofficial.api.show.entities.Show;
+import jakarta.persistence.Column;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -55,8 +57,10 @@ public class ShowDetail extends RepresentationModel<ShowDetail> implements Seria
         private String name;
         private Integer totalSeats;
         private Integer availableSeats;
+        private Integer numberOfRows;
+        private Integer colsPerRow;
         private CinemaDto cinema;
-        private List<SeatDto> seats;
+        private List<SeatRow> rows;
 
         /**
          * DTO for {@link com.example.movieofficial.api.cinema.entities.Cinema}
@@ -68,23 +72,7 @@ public class ShowDetail extends RepresentationModel<ShowDetail> implements Seria
             private String name;
         }
 
-        /**
-         * DTO for {@link Seat}
-         */
-        @Data
-        @AllArgsConstructor
-        public static class SeatDto implements Serializable {
-            private Long id;
-            private Boolean status;
-            private String rowName;
-            private Integer rowIndex;
-            private Long price;
-            private Boolean isReserved;
 
-            public SeatDto() {
-                this.isReserved = false;
-            }
-        }
     }
 
     /**

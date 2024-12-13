@@ -32,6 +32,12 @@ public class Hall extends AuditorEntity {
     @Column(name = "available_seats", nullable = false)
     private Integer availableSeats;
 
+    @Column(name = "number_of_rows", nullable = false)
+    private Integer numberOfRows;
+
+    @Column(name = "cols_per_row", nullable = false)
+    private Integer colsPerRow;
+
     @OneToMany(
             mappedBy = "hall",
             fetch = FetchType.LAZY,

@@ -65,4 +65,10 @@ public interface MovieRepository extends JpaRepository<Movie, String> {
     void updateStatusByReleaseDateEqualsOrBefore(LocalDate releaseDate);
 
 
+    @Query(value = "select m from Movie m " +
+            "join fetch m.formats " +
+            "where m.releaseDate < ?1 " +
+            "and m.endDate > ?1")
+    List<Movie> findByDate(LocalDate date);
+
 }
