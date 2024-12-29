@@ -36,4 +36,6 @@ public interface MovieService {
     void cacheAllMoviesToLanding();
 
     void updateMovieStatus();
+
+    List<MovieInfoLanding> searchMoviesBySlug(String search);
 }

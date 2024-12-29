@@ -175,4 +175,26 @@ public class MovieController {
         return ResponseEntity.ok(result);
     }
 
+
+    @Operation(
+            summary = "Search movie by slug",
+            description = "This API endpoint search a movie matching with input. " +
+                    "The shows are categorized by cinemas, and the data is fetched from the Redis cache for faster access."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "List of cinemas and shows fetched successfully.",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListResponse.class))
+            )
+    })
+    @GetMapping("/search")
+    public ResponseEntity<List<MovieInfoLanding>> searchMovies(
+            @RequestParam("search") String slug
+    ) {
+        var result = movieService.searchMoviesBySlug(slug);
+        result.forEach(movieAssembler::linkToGetMovieDetail);
+        return ResponseEntity.ok(result);
+    }
+
 }

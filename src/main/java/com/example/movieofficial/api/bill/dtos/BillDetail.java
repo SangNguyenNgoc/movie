@@ -107,9 +107,9 @@ public class BillDetail implements Serializable {
         @NoArgsConstructor
         public static class SeatDto implements Serializable {
             private Long id;
-            private Boolean status;
-            private String rowName;
-            private Integer rowIndex;
+            private String name;
+            private Integer currRow;
+            private Integer currCol;
             private SeatTypeDto type;
 
             /**

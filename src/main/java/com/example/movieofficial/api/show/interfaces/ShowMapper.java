@@ -3,7 +3,7 @@ package com.example.movieofficial.api.show.interfaces;
 import com.example.movieofficial.api.bill.dtos.BillDetail;
 import com.example.movieofficial.api.cinema.dtos.CinemaAndShows;
 import com.example.movieofficial.api.hall.entities.Seat;
-import com.example.movieofficial.api.hall.entities.SeatRow;
+import com.example.movieofficial.api.hall.dtos.SeatRow;
 import com.example.movieofficial.api.movie.dtos.MovieAndShows;
 import com.example.movieofficial.api.show.dtos.ShowDetail;
 import com.example.movieofficial.api.show.entities.Show;
@@ -18,9 +18,6 @@ public interface ShowMapper {
     MovieAndShows.ShowDto toShowDtoInMovieAndShows(Show show);
 
     ShowDetail toDetail(Show show);
-
-    @Mapping(source = "type.price", target = "price")
-    SeatRow.SeatDto seatToSeatDto(Seat seat);
 
     BillDetail.TicketDto.ShowDto toShowInBillDetail(Show show);
 

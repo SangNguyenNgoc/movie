@@ -56,22 +56,19 @@ public class BillController {
     })
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<Void> create(
+    public ResponseEntity<String> create(
             @RequestBody BillCreate billCreate,
             HttpServletRequest request
     ) {
         String token = request.getHeader("Authorization");
         String url = billService.create(billCreate, token);
-        URI uri = URI.create(url);
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .location(uri)
-                .build();
+        return ResponseEntity.ok(url);
     }
 
 
     @GetMapping("/payment")
     @Hidden
-    public ResponseEntity<String> handlePayment(
+    public ResponseEntity<Void> handlePayment(
             @RequestParam("vnp_Amount") String amount,
             @RequestParam("vnp_BankCode") String bankCode,
             @RequestParam("vnp_BankTranNo") String bankTranNo,
@@ -85,7 +82,10 @@ public class BillController {
             @RequestParam("vnp_TxnRef") String txnRef,
             @RequestParam("vnp_SecureHash") String secureHash
     ) {
-        return ResponseEntity.ok(billService.payment(txnRef, responseCode, transactionStatus, payDate));
+        String redirect = billService.payment(txnRef, responseCode, transactionStatus, payDate);
+        return ResponseEntity.status(302)
+                .location(URI.create(redirect))
+                .build();
     }
 
 
@@ -130,5 +130,43 @@ public class BillController {
                 .data(billDetails)
                 .build();
         return ResponseEntity.ok(response);
+    }
+
+
+    @Operation(
+            summary = "Get one bill detail",
+            description = "This API endpoint allows users to fetch one bill detail by `ID` that they have purchased. " +
+                    "Requires 'ROLE_ADMIN' or 'ROLE_USER' authority.",
+            security = @SecurityRequirement(name = "Bearer Authentication")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Bill info was fetched successfully."
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized access, authentication required.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Data not found, user not found.",
+                    content = @Content(mediaType = "application/json")
+            )
+    })
+    @GetMapping("/{billId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<BillDetail> getBillById(
+            @PathVariable(name = "billId") String billId,
+            HttpServletRequest request
+    ) {
+        String token = request.getHeader("Authorization");
+        return ResponseEntity.ok(billService.getBillDetail(billId, token));
     }
 }

@@ -2,7 +2,9 @@ package com.example.movieofficial.utils.services;
 
 import com.example.movieofficial.config.VnPayConfig;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
@@ -17,6 +19,10 @@ public class VnPayService {
     private final HttpServletRequest request;
 
     private final VnPayConfig vnPayConfig;
+
+    @Getter
+    @Value("${vn_pay.bill_detail}")
+    private String redirectBill;
 
     public String doPost(long cost, String id) {
 

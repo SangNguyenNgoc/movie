@@ -3,8 +3,11 @@ package com.example.movieofficial.api.bill.entities;
 import com.example.movieofficial.api.ticket.entities.Ticket;
 import com.example.movieofficial.api.user.entities.User;
 import com.example.movieofficial.utils.auditing.AuditorEntity;
+import com.example.movieofficial.utils.auditing.TimestampEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -16,7 +19,7 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(name = "bills")
-public class Bill extends AuditorEntity {
+public class Bill extends TimestampEntity {
 
     @Id
     @Column(name = "id", nullable = false)
@@ -48,6 +51,7 @@ public class Bill extends AuditorEntity {
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Ticket> tickets;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

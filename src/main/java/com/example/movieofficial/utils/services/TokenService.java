@@ -20,12 +20,12 @@ public class TokenService {
 
     private final JwtDecoder jwtDecoder;
 
-    public String generateVerifyToken(User user) {
+    public String generateVerifyToken(User user, Long timeout) {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plus(5, ChronoUnit.MINUTES))
+                .expiresAt(now.plus(timeout, ChronoUnit.MINUTES))
                 .subject(user.getUsername())
                 .claim("scope", List.of("VERIFY"))
                 .notBefore(Instant.ofEpochSecond(now.getEpochSecond() + 60))
@@ -48,6 +48,17 @@ public class TokenService {
     public String extractSubject(String token) {
         Jwt jwt = jwtDecoder.decode(token);
         return jwt.getSubject();
+    }
+
+    public long extractExpInSeconds(String token) {
+        Jwt jwt = jwtDecoder.decode(token);
+        Instant exp = jwt.getClaimAsInstant("exp");
+        return exp != null ? exp.getEpochSecond() : 0;
+    }
+
+    public String extractId(String token) {
+        Jwt jwt = jwtDecoder.decode(token);
+        return jwt.getId();
     }
 
     public String extractClaim(String claim, String token) {

@@ -28,7 +28,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -57,6 +59,7 @@ public class DefaultBillService implements BillService {
 
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public String create(BillCreate billCreate, String token) {
         User user = getUser(token);
 
@@ -68,7 +71,11 @@ public class DefaultBillService implements BillService {
 
         checkSeatsInHall(billCreate.getSeatIds(), show.getHall());
 
-        checkSeatsAreReserved(billCreate.getSeatIds(), show.getId());
+        List<Ticket> ticketsInShow = ticketRepository.findByShowIdOrderBySeatRowNameAscSeatRowIndexAsc(
+                show.getId(),
+                LocalDateTime.now().minusMinutes(2)
+        );
+        checkSeatsAreReserved(billCreate.getSeatIds(), ticketsInShow);
 
         List<Seat> seats = seatRepository.findAllById(billCreate.getSeatIds());
         long totalPrice = seats.stream().mapToLong(seat -> seat.getType().getPrice()).sum();
@@ -105,12 +112,8 @@ public class DefaultBillService implements BillService {
     }
 
     @Override
-    public void checkSeatsAreReserved(List<Long> seatIds, String showId) {
-        List<Ticket> ticketsByShow = ticketRepository.findByShowIdOrderBySeatRowNameAscSeatRowIndexAsc(
-                showId,
-                LocalDateTime.now().minusMinutes(2)
-        );
-        Set<Long> seatIdsAreReserved = ticketsByShow.stream()
+    public void checkSeatsAreReserved(List<Long> seatIds, List<Ticket> ticketsInShow) {
+        Set<Long> seatIdsAreReserved = ticketsInShow.stream()
                 .map(ticket -> ticket.getSeat().getId())
                 .collect(Collectors.toSet());
         for (Long seatId : seatIds) {
@@ -153,18 +156,17 @@ public class DefaultBillService implements BillService {
         if (responseCode.equals("00") && transactionStatus.equals("00")) {
             BillStatus billStatus = billStatusRepository.findById(2).orElseThrow(
                     () -> new DataNotFoundException("Data not found", List.of("Status not found")));
-            if (bill.getFailure()) bill.setFailure(null);
+            if (bill.getFailure() != null) bill.setFailure(null);
             if (bill.getFailureReason() != null) bill.setFailureReason(null);
             bill.setStatus(billStatus);
             bill.setPaymentAt(dateTime);
-            return "Success";
         } else {
             String message = vnPayService.getMessage(responseCode, transactionStatus);
             bill.setFailureReason(message);
             bill.setFailureAt(dateTime);
             bill.setFailure(true);
-            return message;
         }
+        return vnPayService.getRedirectBill() + bill.getId();
     }
 
 
@@ -183,5 +185,24 @@ public class DefaultBillService implements BillService {
                     return billDetail;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public BillDetail getBillDetail(String id, String token) {
+        User user = getUser(token);
+        Bill bill = billRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Data not found", List.of("Bill not found"))
+        );
+        BillDetail billDetail = billMapper.toDetail(bill);
+        Show show = bill.getTickets().iterator().next().getShow();
+        BillDetail.TicketDto.ShowDto showDto = showMapper.toShowInBillDetail(show);
+        billDetail.setShow(showDto);
+        return billDetail;
+    }
+
+    @Override
+    @Scheduled(cron = "0 */5 * * * *")
+    public void deleteBillTask() {
+        billRepository.deleteByExpireAtAndStatusId(LocalDateTime.now(), 1);
     }
 }

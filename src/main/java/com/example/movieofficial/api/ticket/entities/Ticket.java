@@ -19,7 +19,7 @@ public class Ticket {
     @Column(name = "ticket_id", nullable = false)
     private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(
             name = "bill_id",
             referencedColumnName = "id",

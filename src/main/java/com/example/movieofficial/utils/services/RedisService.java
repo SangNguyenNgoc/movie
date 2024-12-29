@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 @Service
@@ -30,11 +31,27 @@ public class RedisService<T> {
         }
     }
 
+    public void deleteValue(String key) {
+        if (key != null && !key.isEmpty()) {
+            stringRedisTemplate.delete(key);
+            log.info("Delete cache successfully");
+        }
+    }
+
     public void setValue(String key, T value) {
         try {
             String json = objectMapper.writeValueAsString(value);
-            Object d = new Object();
             stringRedisTemplate.opsForValue().set(key, json);
+            log.info("The cache with key %s was successfully stored".formatted(key));
+        } catch (Exception e) {
+            log.error("Error connecting to Redis: %s".formatted(e.getMessage()));
+        }
+    }
+
+    public void setValue(String key, T value, Long timeout) {
+        try {
+            String json = objectMapper.writeValueAsString(value);
+            stringRedisTemplate.opsForValue().set(key, json, timeout, TimeUnit.MINUTES);
             log.info("The cache with key %s was successfully stored".formatted(key));
         } catch (Exception e) {
             log.error("Error connecting to Redis: %s".formatted(e.getMessage()));
@@ -55,8 +72,26 @@ public class RedisService<T> {
         }
     }
 
+    public T getAndDeleteValue(String key, TypeReference<T> typeReference) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            String json = stringRedisTemplate.opsForValue().getAndDelete(key);
+            if (json == null) {
+                return null;
+            }
+            return objectMapper.readValue(json, typeReference);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
     public T convertValue(Supplier<T> supplier, TypeReference<T> typeReference) {
         Object data = supplier.get();
         return objectMapper.convertValue(data, typeReference);
+    }
+
+    public Boolean existByKey(String key) {
+        return stringRedisTemplate.hasKey(key);
     }
 }

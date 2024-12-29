@@ -1,9 +1,6 @@
 package com.example.movieofficial.api.user;
 
-import com.example.movieofficial.api.user.dtos.RegisterRequest;
-import com.example.movieofficial.api.user.dtos.UserInfo;
-import com.example.movieofficial.api.user.dtos.UserInfoUpdate;
-import com.example.movieofficial.api.user.dtos.UserProfile;
+import com.example.movieofficial.api.user.dtos.*;
 import com.example.movieofficial.api.user.interfaces.UserService;
 import com.example.movieofficial.utils.dtos.ListResponse;
 import com.example.movieofficial.utils.dtos.PageResponse;
@@ -301,6 +298,16 @@ public class UserController {
                     description = "User not found.",
                     content = @Content(mediaType = "application/json")
             ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized access. The request is missing a valid Bearer token.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden access. The user does not have the required role.",
+                    content = @Content(mediaType = "application/json")
+            )
     })
     @PutMapping("/avatar")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
@@ -312,6 +319,181 @@ public class UserController {
         var profile = userService.updateAvatar(image, token);
         userAssembler.linkToCrudUser(profile);
         return ResponseEntity.ok(profile);
+    }
+
+
+    @Operation(
+            summary = "Send to updating email",
+            description = "This API endpoint will send verification to new email which user want to updating.",
+            security = @SecurityRequirement(name = "Bearer Authentication")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Send message to new email successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserProfile.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request parameters.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "User not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized access. The request is missing a valid Bearer token.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden access. The user does not have the required role.",
+                    content = @Content(mediaType = "application/json")
+            )
+    })
+    @GetMapping("/email")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<Void> sendNewEmail(
+            @RequestParam(value = "email") String email,
+            HttpServletRequest request
+    ) {
+        var token = request.getHeader("Authorization");
+        userService.setUpUpdateEmail(email, token);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @Operation(
+            summary = "Send OTP to email to updating password",
+            description = "This API endpoint will send OTP to user's emails to updating their password.",
+            security = @SecurityRequirement(name = "Bearer Authentication")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Send OTP to new email successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserProfile.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request body.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "User not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized access. The request is missing a valid Bearer token.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden access. The user does not have the required role.",
+                    content = @Content(mediaType = "application/json")
+            )
+    })
+    @PutMapping("/change-password")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<Void> setUpChangePass(
+            @RequestBody(required = false) ChangePassRequest input,
+            HttpServletRequest request
+    ) {
+        var token = request.getHeader("Authorization");
+        userService.setUpUpdatePassword(input, token);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @Operation(
+            summary = "Updating password",
+            description = "This API endpoint will update user's password base on otp.",
+            security = @SecurityRequirement(name = "Bearer Authentication")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Send OTP to new email successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserProfile.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request body.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "User not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized access. The request is missing a valid Bearer token.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden access. The user does not have the required role.",
+                    content = @Content(mediaType = "application/json")
+            )
+    })
+    @PutMapping("/password")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<Void> updatePassword(
+            @RequestParam(value = "otp") String otp,
+            HttpServletRequest request
+    ) {
+        var token = request.getHeader("Authorization");
+        userService.changePassword(otp, token);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @Operation(
+            summary = "Log out user",
+            description = "This API endpoint will log out user.",
+            security = @SecurityRequirement(name = "Bearer Authentication")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Send OTP to new email successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserProfile.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request body.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "User not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized access. The request is missing a valid Bearer token.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden access. The user does not have the required role.",
+                    content = @Content(mediaType = "application/json")
+            )
+    })
+    @GetMapping("/logout")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<Void> logout(
+            HttpServletRequest request
+    ) {
+        var token = request.getHeader("Authorization");
+        userService.logout(token);
+        return ResponseEntity.ok().build();
     }
 
 }

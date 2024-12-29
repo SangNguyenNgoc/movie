@@ -1,9 +1,7 @@
 package com.example.movieofficial.api.show.dtos;
 
-import com.example.movieofficial.api.hall.entities.Seat;
-import com.example.movieofficial.api.hall.entities.SeatRow;
+import com.example.movieofficial.api.hall.dtos.SeatRow;
 import com.example.movieofficial.api.show.entities.Show;
-import jakarta.persistence.Column;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -29,6 +27,7 @@ public class ShowDetail extends RepresentationModel<ShowDetail> implements Seria
     private MovieDto movie;
     private HallDto hall;
     private FormatDto format;
+    private List<ShowInfo> sameShows;
 
 
     /**
@@ -43,6 +42,8 @@ public class ShowDetail extends RepresentationModel<ShowDetail> implements Seria
         private String subName;
         private LocalDate releaseDate;
         private Integer runningTime;
+        private String poster;
+        private Integer ageRestriction;
         private String slug;
     }
 
@@ -68,8 +69,9 @@ public class ShowDetail extends RepresentationModel<ShowDetail> implements Seria
         @Data
         @AllArgsConstructor
         public static class CinemaDto implements Serializable {
-            private UUID id;
+            private String id;
             private String name;
+            private String slug;
         }
 
 

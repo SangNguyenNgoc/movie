@@ -28,6 +28,14 @@ public interface ShowRepository extends JpaRepository<Show, String> {
             """)
     Optional<Show> findWithDetailsByIdAndDateTime(String id, LocalDate date, LocalTime time);
 
+    @Query("select s from Show s " +
+            "where s.startDate = ?1 " +
+            "and s.movie.slug = ?2 " +
+            "and s.format.id = ?3 " +
+            "and (s.startDate != ?5 or s.startTime > ?4) " +
+            "order by s.startTime")
+    List<Show> findSameShow(LocalDate startDate, String slug, Long formatId, LocalTime time, LocalDate today);
+
     @Transactional
     @Modifying
     @Query("update Show s set s.status = false where s.startDate < ?1")

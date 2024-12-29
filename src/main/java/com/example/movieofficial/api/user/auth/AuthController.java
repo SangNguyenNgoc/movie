@@ -18,8 +18,8 @@ public class AuthController {
 
     private final UserService userService;
 
-    @Value("${url.base-url}")
-    private String baseUri;
+    @Value("${url.home-page-url}")
+    private String homePageUrl;
 
     @GetMapping("/login")
     public String loginPage(
@@ -40,6 +40,20 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(userService.verify(token))
                 .build();
+    }
+
+    @GetMapping("/email")
+    public String email(
+            @RequestParam(name = "t") String token,
+            Model model
+    ) {
+        var message = userService.updateEmail(token);
+        model.addAttribute("message", message.getMsg());
+        model.addAttribute("subject", message.getSubject());
+        model.addAttribute("image", message.getImg());
+        model.addAttribute("title", message.getTitle());
+        model.addAttribute("home", homePageUrl);
+        return "success";
     }
 
 }

@@ -1,6 +1,8 @@
 server:
   port: 8080
 spring:
+  session:
+    timeout: 60
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: ${MYSQL_URL}
@@ -39,9 +41,11 @@ spring:
 logging:
   level:
     org.springframework.cache: trace
+    org.springframework.transaction: debug
     org.ehcache: trace
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.hibernate.Transaction: debug
 
 
 client:
@@ -65,7 +69,7 @@ springdoc:
 
 token:
   key-size: 2048
-  access-token-time-to-live: 7
+  access-token-time-to-live: 1
 
 url:
   host: ${DOMAIN}
@@ -74,6 +78,8 @@ url:
   login-url: /login
   verify-url: /auth/verify
   register-page-url: http://localhost:3000/register
+  change-email-url: /auth/email
+  home-page-url: http://localhost:3000
   avatar: https://cdn.discordapp.com/attachments/1168144426141499412/1169264779769155594/c6e56503cfdd87da299f72dc416023d4.jpg?ex=66a2512f&is=66a0ffaf&hm=a7dfbd6f1d504be1302857abc0dcb2abc9f8f03741eb92319d5c2dcc2d1f7184&
 
 vn_pay:
@@ -82,6 +88,7 @@ vn_pay:
   tmn_code: ${TMN_CODE}
   key: ${VNPAY_KEY}
   time_out: 10
+  bill_detail: http://localhost:3000/bill/
 
 s3client:
   endpoint_url: ${ENDPOINT}
@@ -98,3 +105,8 @@ schedule_shows:
   end_in_day: "23:59"
   cleaning_time: 15 #minus
   interval_time: 15 #minus
+
+timeout:
+  verify: 5
+  change_email: 5
+  change_pass: 5

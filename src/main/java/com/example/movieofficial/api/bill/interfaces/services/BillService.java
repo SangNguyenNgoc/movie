@@ -18,7 +18,7 @@ public interface BillService {
 
     void checkSeatsInHall(List<Long> seatIds, Hall hall);
 
-    void checkSeatsAreReserved(List<Long> seatIds, String showId);
+    void checkSeatsAreReserved(List<Long> seatIds, List<Ticket> ticketsInShow);
 
     Set<Ticket> createTicket(Show show, List<Seat> seats, Bill bill);
 
@@ -28,4 +28,7 @@ public interface BillService {
 
     List<BillDetail> getBillByUser(String token, Integer page, Integer size, String status);
 
+    BillDetail getBillDetail(String id, String token);
+
+    void deleteBillTask();
 }

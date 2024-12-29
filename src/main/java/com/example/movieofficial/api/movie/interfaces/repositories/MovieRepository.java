@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,4 +72,8 @@ public interface MovieRepository extends JpaRepository<Movie, String> {
             "and m.endDate > ?1")
     List<Movie> findByDate(LocalDate date);
 
+    @Query("select mv from Movie mv " +
+            "where mv.slug LIKE %:input% " +
+            "and (mv.status.id = 1 or mv.status.id = 2)")
+    List<Movie> searchBySlug(@Param(value = "input") String input);
 }

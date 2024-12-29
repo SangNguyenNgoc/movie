@@ -21,12 +21,16 @@ public class MailService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
-    public void sendEmail(String to, String subject, String body) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(to);
-        simpleMailMessage.setText(body);
-        simpleMailMessage.setSubject(subject);
-        javaMailSender.send(simpleMailMessage);
+    @Async
+    public void sendEmail(String to, String subject, String body) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setPriority(1);
+        helper.setFrom(fromEmail, "The Cinema");
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(body, false);
+        javaMailSender.send(message);
     }
 
     @Async

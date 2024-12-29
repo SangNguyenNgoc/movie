@@ -19,8 +19,12 @@ public class ApplicationAuditAware implements AuditorAware<String> {
         ) {
             return Optional.empty();
         }
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String userId = jwt.getClaim("sub");
-        return Optional.of(userId);
+        try {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String userId = jwt.getClaim("sub");
+            return Optional.of(userId);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.example.movieofficial.config;
 
 import com.example.movieofficial.api.user.auth.CustomAuthenticationFailureHandler;
 import com.example.movieofficial.utils.auditing.ApplicationAuditAware;
+import com.example.movieofficial.utils.filter.BlackListFilter;
 import com.example.movieofficial.utils.filter.MyCorsFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 @Configuration

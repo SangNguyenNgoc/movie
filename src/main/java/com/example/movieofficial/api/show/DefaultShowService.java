@@ -1,7 +1,7 @@
 package com.example.movieofficial.api.show;
 
 import com.example.movieofficial.api.hall.entities.Seat;
-import com.example.movieofficial.api.hall.entities.SeatRow;
+import com.example.movieofficial.api.hall.dtos.SeatRow;
 import com.example.movieofficial.api.hall.interfaces.SeatMapper;
 import com.example.movieofficial.api.show.dtos.ShowAutoCreate;
 import com.example.movieofficial.api.show.dtos.ShowCreate;
@@ -69,7 +69,7 @@ public class DefaultShowService implements ShowService {
         ).orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Show not found")));
 
         Map<SeatRow, List<SeatRow.SeatDto>> seatAfterSort = show.getHall().getSeats().stream()
-                .sorted(Comparator.comparing(Seat::getCurrCol))
+                .sorted(Comparator.comparing(Seat::getCurrCol).reversed())
                 .map(seatMapper::toDto)
                 .collect(
                         Collectors.groupingBy(seat ->
@@ -96,12 +96,17 @@ public class DefaultShowService implements ShowService {
                 LocalDateTime.now().minusMinutes(2)
         );
         tickets.forEach(ticket -> {
-            int row = ticket.getSeat().getCurrRow() - 1;
-            int col = ticket.getSeat().getCurrCol() - 1;
-//            int sizeRow = showDetail.getHall().getColsPerRow();
-//            int seatIndex = row * sizeRow + col;
+            int row = showDetail.getHall().getNumberOfRows() - ticket.getSeat().getCurrRow();
+            int col = showDetail.getHall().getColsPerRow() - ticket.getSeat().getCurrCol();
             showDetail.getHall().getRows().get(row).getSeats().get(col).setIsReserved(true);
         });
+        List<Show> sameShow = showRepository.findSameShow(
+                showDetail.getStartDate(),
+                showDetail.getMovie().getSlug(),
+                showDetail.getFormat().getId(),
+                LocalTime.now(), LocalDate.now()
+        );
+        showDetail.setSameShows(sameShow.stream().map(showMapper::toInfo).collect(Collectors.toList()));
         return showDetail;
     }
 

@@ -18,6 +18,7 @@ import com.example.movieofficial.api.show.interfaces.ShowMapper;
 import com.example.movieofficial.utils.dtos.PageResponse;
 import com.example.movieofficial.utils.exceptions.DataNotFoundException;
 import com.example.movieofficial.utils.services.RedisService;
+import com.example.movieofficial.utils.services.UtilsService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +49,7 @@ public class DefaultMovieService implements MovieService {
     private final RedisService<MovieDetail> redisMovieDetail;
     private final RedisService<List<StatusInfo>> redisStatusInfo;
     private final RedisService<List<MovieInfoLanding>> redisMovieInfo;
+    private final UtilsService utils;
 
     @Value("${show.showing-before-day}")
     private Integer showBeforeDay;
@@ -226,5 +228,12 @@ public class DefaultMovieService implements MovieService {
         LocalDate now = LocalDate.now();
         movieRepository.updateStatusByEndDateBefore(now);
         movieRepository.updateStatusByReleaseDateEqualsOrBefore(now);
+    }
+
+    @Override
+    public List<MovieInfoLanding> searchMoviesBySlug(String search) {
+        var slug = utils.toSlug(search);
+        var movies = movieRepository.searchBySlug(slug);
+        return movies.stream().map(movieMapper::toInfoLanding).collect(Collectors.toList());
     }
 }
