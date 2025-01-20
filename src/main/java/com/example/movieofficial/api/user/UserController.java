@@ -11,10 +11,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -90,7 +95,7 @@ public class UserController {
     })
     @GetMapping("/profile")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<UserProfile> getProfile(HttpServletRequest request) {
+    public ResponseEntity<UserProfile> getProfile(HttpServletRequest request, HttpSession session) {
         var token = request.getHeader("Authorization");
         var profile = userService.getProfile(token);
         userAssembler.linkToCrudUser(profile);
@@ -450,49 +455,6 @@ public class UserController {
     ) {
         var token = request.getHeader("Authorization");
         userService.changePassword(otp, token);
-        return ResponseEntity.ok().build();
-    }
-
-
-    @Operation(
-            summary = "Log out user",
-            description = "This API endpoint will log out user.",
-            security = @SecurityRequirement(name = "Bearer Authentication")
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Send OTP to new email successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserProfile.class))
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid request body.",
-                    content = @Content(mediaType = "application/json")
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "User not found.",
-                    content = @Content(mediaType = "application/json")
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized access. The request is missing a valid Bearer token.",
-                    content = @Content(mediaType = "application/json")
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden access. The user does not have the required role.",
-                    content = @Content(mediaType = "application/json")
-            )
-    })
-    @GetMapping("/logout")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<Void> logout(
-            HttpServletRequest request
-    ) {
-        var token = request.getHeader("Authorization");
-        userService.logout(token);
         return ResponseEntity.ok().build();
     }
 

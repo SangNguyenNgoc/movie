@@ -48,7 +48,7 @@ public class Bill extends TimestampEntity {
 
     @OneToMany(
             mappedBy = "bill",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
     @OnDelete(action = OnDeleteAction.CASCADE)

@@ -27,7 +27,7 @@ public class Ticket {
     )
     private Bill bill;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "showtime_id",
             referencedColumnName = "id",

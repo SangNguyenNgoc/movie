@@ -1,19 +1,21 @@
 package com.example.movieofficial.api.cinema;
 
-import com.example.movieofficial.api.cinema.dtos.CinemaDetail;
-import com.example.movieofficial.api.cinema.dtos.CinemaInfo;
-import com.example.movieofficial.api.cinema.dtos.CinemaInfoLanding;
+import com.example.movieofficial.api.cinema.dtos.*;
 import com.example.movieofficial.api.cinema.entities.Cinema;
 import com.example.movieofficial.api.cinema.interfaces.CinemaMapper;
 import com.example.movieofficial.api.cinema.interfaces.CinemaRepository;
 import com.example.movieofficial.api.cinema.interfaces.CinemaService;
+import com.example.movieofficial.api.cinema.interfaces.CinemaStatusRepository;
 import com.example.movieofficial.api.movie.dtos.MovieAndShows;
 import com.example.movieofficial.api.movie.entities.Movie;
-import com.example.movieofficial.api.movie.interfaces.mappers.MovieMapper;
-import com.example.movieofficial.api.movie.interfaces.repositories.MovieRepository;
+import com.example.movieofficial.api.movie.mappers.MovieMapper;
+import com.example.movieofficial.api.movie.repositories.MovieRepository;
 import com.example.movieofficial.api.show.interfaces.ShowMapper;
 import com.example.movieofficial.utils.exceptions.DataNotFoundException;
+import com.example.movieofficial.utils.exceptions.ServerInternalException;
+import com.example.movieofficial.utils.services.ObjectsValidator;
 import com.example.movieofficial.utils.services.RedisService;
+import com.example.movieofficial.utils.services.UtilsService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,10 +40,13 @@ public class DefaultCinemaService implements CinemaService {
 
     private final CinemaRepository cinemaRepository;
     private final MovieRepository movieRepository;
+    private final CinemaStatusRepository cinemaStatusRepository;
     private final CinemaMapper cinemaMapper;
     private final MovieMapper movieMapper;
     private final ShowMapper showMapper;
     private final RedisService<List<CinemaDetail>> redisCinemaDetails;
+    private final ObjectsValidator<CinemaCreate> cinemaCreateValidator;
+    private final UtilsService utilsService;
 
     @Value("${show.showing-before-day}")
     private Integer showBeforeDay;
@@ -98,6 +103,40 @@ public class DefaultCinemaService implements CinemaService {
                 .collect(Collectors.toList());
         cinemaDetail.setMovies(movieAndShows);
         return cinemaDetail;
+    }
+
+    @Override
+    public CinemaDetail getCinemaAndShowsFromRedis(String slug) {
+        List<CinemaDetail> cinemaDetails = redisCinemaDetails.getValue("cinemas_movies_shows", new TypeReference<List<CinemaDetail>>() {});
+        if (cinemaDetails == null) {
+            cinemaDetails = getAllCinemaAndShows();
+            redisCinemaDetails.setValue("cinemas_movies_shows", cinemaDetails);
+        }
+        var cinemaDetail = findCinemaDetail(cinemaDetails, slug).orElseThrow(
+                () -> new DataNotFoundException("Not found", List.of("Cinema not found!"))
+        );
+        cinemaDetail.getMovies().forEach(movieAndShows -> {
+            Iterator<MovieAndShows.ShowDto> iterator = movieAndShows.getShows().iterator();
+            while (iterator.hasNext()) {
+                MovieAndShows.ShowDto show = iterator.next();
+                LocalDateTime showTime = LocalDateTime.of(show.getStartDate(), show.getStartTime());
+                if (showTime.isBefore(LocalDateTime.now())) {
+                    iterator.remove();
+                } else {
+                    break;
+                }
+            }
+        });
+        return cinemaDetail;
+    }
+
+    private Optional<CinemaDetail> findCinemaDetail(List<CinemaDetail> cinemaDetails, String slug) {
+        for(var item : cinemaDetails) {
+            if (item.getSlug().equals(slug)) {
+                return Optional.of(item);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -164,5 +203,41 @@ public class DefaultCinemaService implements CinemaService {
     public void cacheAllCinemasMoviesShows() {
         List<CinemaDetail> cinemaDetails = getAllCinemaAndShows();
         redisCinemaDetails.setValue("cinemas_movies_shows", cinemaDetails);
+    }
+
+    @Override
+    @Transactional
+    public CinemaInfo createCinema(CinemaCreate cinemaCreate) {
+        cinemaCreateValidator.validate(cinemaCreate);
+        var cinema = cinemaMapper.toEntity(cinemaCreate);
+        var status = cinemaStatusRepository.findById(2L).orElseThrow(
+                () -> new ServerInternalException("Server error", List.of("Server error"))
+        );
+        cinema.setSlug(utilsService.toSlug(cinemaCreate.getName()));
+        cinema.setStatus(status);
+        cinemaRepository.save(cinema);
+        return cinemaMapper.toInfo(cinema);
+    }
+
+    @Override
+    @Transactional
+    public CinemaInfo updateCinema(CinemaUpdate cinemaUpdate, String cinemaId) {
+        var cinema = cinemaRepository.findById(cinemaId).orElseThrow(
+                () -> new DataNotFoundException("Data not found", List.of("Cinema not found"))
+        );
+        var cinemaUpdated = cinemaMapper.partialUpdate(cinemaUpdate, cinema);
+        if (cinemaUpdate.getName() != null) {
+            cinema.setSlug(utilsService.toSlug(cinemaUpdate.getName()));
+        }
+        if (cinemaUpdate.getPhoneNumber() != null && utilsService.isValidVietnamesePhoneNumber(cinemaUpdate.getPhoneNumber())) {
+            cinema.setPhoneNumber(cinemaUpdate.getPhoneNumber());
+        }
+        if (cinemaUpdate.getStatusId() != null) {
+            var status = cinemaStatusRepository.findById(cinemaUpdate.getStatusId()).orElseThrow(
+                    () -> new DataNotFoundException("Data not found", List.of("Cinema status not found"))
+            );
+            cinema.setStatus(status);
+        }
+        return cinemaMapper.toInfo(cinemaUpdated);
     }
 }

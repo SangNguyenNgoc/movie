@@ -16,12 +16,6 @@ public interface BillService {
 
     String create(BillCreate billCreate, String token);
 
-    void checkSeatsInHall(List<Long> seatIds, Hall hall);
-
-    void checkSeatsAreReserved(List<Long> seatIds, List<Ticket> ticketsInShow);
-
-    Set<Ticket> createTicket(Show show, List<Seat> seats, Bill bill);
-
     User getUser(String token);
 
     String payment(String id, String responseCode, String transactionStatus, String paymentAt);

@@ -1,7 +1,7 @@
-package com.example.movieofficial.api.movie;
+package com.example.movieofficial.api.movie.controllers;
 
 import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
-import com.example.movieofficial.api.movie.interfaces.services.FormatService;
+import com.example.movieofficial.api.movie.services.FormatService;
 import com.example.movieofficial.utils.dtos.ListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,7 @@
-package com.example.movieofficial.api.movie;
+package com.example.movieofficial.api.movie.hateoas;
 
 import com.example.movieofficial.api.cinema.dtos.CinemaDetail;
+import com.example.movieofficial.api.movie.controllers.MovieController;
 import com.example.movieofficial.api.movie.dtos.MovieDetail;
 import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;
 import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;

@@ -72,7 +72,7 @@ public class S3Service {
             uploadFileTos3bucket(fileName, file);
             file.delete();
         } catch (Exception e) {
-            log.error("Uploading image is failure");
+            log.error("Uploading image is failure: {}", e.getMessage(), e);
             throw new AppException("Server error", HttpStatus.INTERNAL_SERVER_ERROR, List.of(e.getMessage()));
         }
         return fileUrl;

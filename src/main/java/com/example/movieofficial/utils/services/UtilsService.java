@@ -39,4 +39,9 @@ public class UtilsService {
         slug = slug.replaceAll("[^a-z0-9\\-]", "");
         return slug;
     }
+
+    public boolean isValidVietnamesePhoneNumber(String phone) {
+        String vietnamesePhoneRegex = "^(0[3|5|7|8|9])[0-9]{8}$";
+        return phone.matches(vietnamesePhoneRegex);
+    }
 }

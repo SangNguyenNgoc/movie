@@ -1,10 +1,9 @@
-package com.example.movieofficial.api.movie.services;
+package com.example.movieofficial.api.movie.services.impl;
 
 import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
-import com.example.movieofficial.api.movie.interfaces.mappers.FormatMapper;
-import com.example.movieofficial.api.movie.interfaces.repositories.FormatRepository;
-import com.example.movieofficial.api.movie.interfaces.services.FormatService;
-import com.example.movieofficial.utils.dtos.ListResponse;
+import com.example.movieofficial.api.movie.mappers.FormatMapper;
+import com.example.movieofficial.api.movie.repositories.FormatRepository;
+import com.example.movieofficial.api.movie.services.FormatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

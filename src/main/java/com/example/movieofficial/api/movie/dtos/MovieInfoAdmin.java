@@ -42,6 +42,7 @@ public class MovieInfoAdmin extends RepresentationModel<MovieInfoAdmin> implemen
     private Set<FormatDto> formats;
     private Set<GenreDto> genres;
     private Set<ImageDto> images;
+    private MovieStatusDto status;
     private Long statusId;
     private String statusDescription;
     private String statusSlug;
@@ -81,5 +82,17 @@ public class MovieInfoAdmin extends RepresentationModel<MovieInfoAdmin> implemen
         private Long id;
         private String path;
         private String extension;
+    }
+
+    /**
+     * DTO for {@link com.example.movieofficial.api.movie.entities.MovieStatus}
+     */
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MovieStatusDto implements Serializable {
+        private Long id;
+        private String description;
+        private String slug;
     }
 }

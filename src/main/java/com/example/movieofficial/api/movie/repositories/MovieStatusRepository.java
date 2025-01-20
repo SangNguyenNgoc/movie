@@ -1,4 +1,4 @@
-package com.example.movieofficial.api.movie.interfaces.repositories;
+package com.example.movieofficial.api.movie.repositories;
 
 import com.example.movieofficial.api.movie.entities.MovieStatus;
 import org.springframework.data.jpa.repository.JpaRepository;

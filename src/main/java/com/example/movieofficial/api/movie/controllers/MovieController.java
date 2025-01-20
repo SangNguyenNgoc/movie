@@ -1,12 +1,11 @@
-package com.example.movieofficial.api.movie;
+package com.example.movieofficial.api.movie.controllers;
 
-import com.example.movieofficial.api.movie.dtos.MovieDetail;
-import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;
-import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
-import com.example.movieofficial.api.movie.dtos.StatusInfo;
-import com.example.movieofficial.api.movie.interfaces.services.MovieService;
+import com.example.movieofficial.api.movie.dtos.*;
+import com.example.movieofficial.api.movie.hateoas.MovieModelAssembler;
+import com.example.movieofficial.api.movie.services.MovieService;
 import com.example.movieofficial.utils.dtos.ListResponse;
 import com.example.movieofficial.utils.dtos.PageResponse;
+import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,9 +13,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -64,6 +67,7 @@ public class MovieController {
             @RequestParam("size") Integer size
     ) {
         PageResponse<MovieInfoLanding> response = movieService.getMoviesByStatusFromRedis("showing-now", page - 1, size);
+        response.getData().forEach(movieAssembler::linkToGetMovieDetail);
         response.add(linkTo(MovieController.class)
                 .slash("showing-now")
                 .withSelfRel()
@@ -81,7 +85,9 @@ public class MovieController {
             @RequestParam("page") Integer page,
             @RequestParam("size") Integer size
     ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         PageResponse<MovieInfoLanding> response = movieService.getMoviesByStatusFromRedis("coming-soon", page - 1, size);
+        response.getData().forEach(movieAssembler::linkToGetMovieDetail);
         response.add(linkTo(MovieController.class)
                 .slash("coming-soon")
                 .withSelfRel()
@@ -142,6 +148,10 @@ public class MovieController {
             @ApiResponse(
                     responseCode = "403",
                     description = "Access denied"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized"
             )
     })
     @GetMapping("/{id}")
@@ -195,6 +205,151 @@ public class MovieController {
         var result = movieService.searchMoviesBySlug(slug);
         result.forEach(movieAssembler::linkToGetMovieDetail);
         return ResponseEntity.ok(result);
+    }
+
+
+    @Operation(
+            summary = "Create new movie",
+            description = "This API endpoint allow admin to create a new movie" +
+                    "Requires 'ROLE_ADMIN' authority."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Create successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Data not found, related data not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Access denied"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized"
+            )
+    })
+    @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<MovieInfoAdmin> create(
+            @RequestParam(value = "movie") String movieJson,
+            @RequestParam(value = "poster") MultipartFile poster,
+            @RequestParam(value = "horPoster") MultipartFile horPoster,
+            @RequestParam(value = "images") List<MultipartFile> images
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(movieService.create(movieJson, poster, horPoster, images));
+    }
+
+
+    @Operation(
+            summary = "Update movie information",
+            description = "This API endpoint allow admin to update movie information" +
+                    "Requires 'ROLE_ADMIN' authority."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Update successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Data not found, movie not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Access denied"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized"
+            )
+    })
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<MovieInfoAdmin> updateMovieInfo(
+            @RequestBody MovieUpdate movieUpdate,
+            @PathVariable String id
+    ) {
+        return ResponseEntity.ok(movieService.updateMovieInfo(movieUpdate, id));
+    }
+
+
+    @Operation(
+            summary = "Update image of movie",
+            description = "This API endpoint allow admin to add or delete a image of a movie" +
+                    "Requires 'ROLE_ADMIN' authority."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Update successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Data not found, movie not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Access denied"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized"
+            )
+    })
+    @PutMapping("/{id}/images")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<MovieInfoAdmin> updateMovieImage(
+            @PathVariable(value = "id") String id,
+            @RequestParam(value = "imageId", required = false) Long imageId,
+            @RequestParam(value = "image", required = false) MultipartFile image
+    ) {
+        return ResponseEntity.ok(movieService.updateImages(image, imageId, id));
+    }
+
+
+    @Operation(
+            summary = "Update poster of movie",
+            description = "This API endpoint allow admin to update poster of a movie" +
+                    "Requires 'ROLE_ADMIN' authority."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Update successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Data not found, movie not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Access denied"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized"
+            )
+    })
+    @PutMapping("/{id}/poster")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<MovieInfoAdmin> updateMoviePoster(
+            @PathVariable(value = "id") String id,
+            @RequestParam(value = "horizontal") Boolean horizontal,
+            @RequestParam(value = "poster") MultipartFile poster
+    ) {
+        return ResponseEntity.ok(movieService.updatePoster(poster, id, horizontal));
     }
 
 }

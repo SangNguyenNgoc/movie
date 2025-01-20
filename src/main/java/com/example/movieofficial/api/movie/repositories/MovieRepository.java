@@ -1,4 +1,4 @@
-package com.example.movieofficial.api.movie.interfaces.repositories;
+package com.example.movieofficial.api.movie.repositories;
 
 import com.example.movieofficial.api.movie.entities.Movie;
 import org.springframework.data.domain.Page;
@@ -76,4 +76,30 @@ public interface MovieRepository extends JpaRepository<Movie, String> {
             "where mv.slug LIKE %:input% " +
             "and (mv.status.id = 1 or mv.status.id = 2)")
     List<Movie> searchBySlug(@Param(value = "input") String input);
+
+    @Query(value = "select EXISTS(select 1 from movie_genre where genre_id = ?1 and movie_id = ?2)", nativeQuery = true)
+    boolean existsByGenreAndId(Long genreId, String movieId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "insert into movie_genre value (?2, ?1)", nativeQuery = true)
+    void addGenre(Long genreId, String movieId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "delete from movie_genre where genre_id = ?1 and movie_id = ?2", nativeQuery = true)
+    void deleteGenre(Long genreId, String movieId);
+
+    @Query(value = "select EXISTS(select 1 from movie_format where format_id = ?1 and movie_id = ?2)", nativeQuery = true)
+    boolean existsByFormatAndId(Long formatId, String movieId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "insert into movie_format value (?2, ?1)", nativeQuery = true)
+    void addFormat(Long genreId, String movieId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "delete from movie_format where format_id = ?1 and movie_id = ?2", nativeQuery = true)
+    void deleteFormat(Long formatId, String movieId);
 }

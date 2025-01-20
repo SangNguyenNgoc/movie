@@ -4,6 +4,10 @@ import com.example.movieofficial.api.user.auth.CustomAuthenticationFailureHandle
 import com.example.movieofficial.utils.auditing.ApplicationAuditAware;
 import com.example.movieofficial.utils.filter.BlackListFilter;
 import com.example.movieofficial.utils.filter.MyCorsFilter;
+import com.example.movieofficial.utils.services.RedisService;
+import com.example.movieofficial.utils.services.TokenService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +21,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,8 +32,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+
+import java.time.Instant;
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +44,8 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final MyCorsFilter myCorsFilter;
+    private final RedisService<String> redisService;
+    private final TokenService tokenService;
 
     @Value("${url.login-page-url}")
     private String loginPageUrl;
@@ -80,12 +88,39 @@ public class SecurityConfig {
                         )
                         .permitAll()
                         .anyRequest().permitAll())
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .and()
                 .userDetailsService(userDetailsService)
                 .addFilterBefore(myCorsFilter, ChannelProcessingFilter.class)
                 .formLogin(login -> login
                         .loginPage(loginPageUrl)
                         .loginProcessingUrl(loginUrl)
                         .permitAll());
+        httpSecurity.logout(logout -> logout
+                .logoutUrl("/logout") // URL để xử lý yêu cầu logout
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    String token = request.getHeader("Authorization");
+                    request.getSession().invalidate();
+                    Cookie cookie = new Cookie("JSESSIONID", null);
+                    cookie.setPath("/");
+                    cookie.setHttpOnly(true);
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    long expTimestamp = tokenService.extractExpInSeconds(token.substring(7));
+                    long currentTimestamp = Instant.now().getEpochSecond();
+                    long secondsRemaining = expTimestamp - currentTimestamp;
+                    long minutesRemaining = secondsRemaining / 60;
+                    String idToken = tokenService.extractId(token.substring(7));
+                    redisService.setValue("black_list:" + idToken, "", minutesRemaining);
+                })
+                .invalidateHttpSession(true)  // Hủy session hiện tại
+                .clearAuthentication(true) // Xóa thông tin xác thực
+        );
         return httpSecurity.build();
     }
 

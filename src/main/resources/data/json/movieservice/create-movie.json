@@ -1,0 +1,16 @@
+{
+  "name": "Avatar: The Way of Water",
+  "subName": "Avatar: Dòng chảy của nước",
+  "director": "James Cameron",
+  "performers": "Sam Worthington, Zoe Saldana, Sigourney Weaver",
+  "releaseDate": "2025-12-18",
+  "endDate": "2026-01-30",
+  "runningTime": 192,
+  "language": "English",
+  "description": "Jake Sully and Ney'tiri must protect their family from new threats while exploring the underwater world of Pandora.",
+  "ageRestriction": 13,
+  "trailer": "https://www.youtube.com/watch?v=d9MyW72ELq0",
+  "producer": "20th Century Studios",
+  "genreIds": [1, 4, 7],
+  "formatIds": [1, 2, 3]
+}

@@ -1,8 +1,9 @@
 package com.example.movieofficial.api.cinema;
 
-import com.example.movieofficial.api.cinema.dtos.CinemaDetail;
-import com.example.movieofficial.api.cinema.dtos.CinemaInfoLanding;
+import com.example.movieofficial.api.cinema.dtos.*;
 import com.example.movieofficial.api.cinema.interfaces.CinemaService;
+import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;
+import com.example.movieofficial.api.movie.dtos.MovieUpdate;
 import com.example.movieofficial.api.show.ShowModelAssembler;
 import com.example.movieofficial.utils.dtos.ListResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,10 +13,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -80,5 +81,97 @@ public class CinemaController {
                 .withSelfRel()
                 .withType(HttpMethod.GET.name()));
         return ResponseEntity.ok(response);
+    }
+
+
+    @Operation(
+            summary = "Get one cinemas by slug and its shows",
+            description = "This API endpoint fetches a cinemas by slug with the shows it is currently screening. " +
+                    "The shows are categorized by film, and the data is fetched from the Redis cache for faster access."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "List of cinemas and shows fetched successfully.",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Cinema not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+    })
+    @GetMapping("/shows/{slug}")
+    public ResponseEntity<CinemaDetail> getAllCinemaAndShows(@PathVariable(value = "slug") String slug) {
+        var result = cinemaService.getCinemaAndShowsFromRedis(slug);
+        cinemaAssembler.linkToGetShowDetail(result);
+        return ResponseEntity.ok(result);
+    }
+
+
+    @Operation(
+            summary = "Create new cinema",
+            description = "This API endpoint allow admin to create a new cinema" +
+                    "Requires 'ROLE_ADMIN' authority."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Create successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Data not found, related data not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Access denied"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized"
+            )
+    })
+    @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<CinemaInfo> create(@RequestBody CinemaCreate cinemaCreate) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(cinemaService.createCinema(cinemaCreate));
+    }
+
+
+    @Operation(
+            summary = "Update cinema information",
+            description = "This API endpoint allow admin to update cinema information" +
+                    "Requires 'ROLE_ADMIN' authority."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Update successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Data not found, movie not found.",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Access denied"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized"
+            )
+    })
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<CinemaInfo> updateMovieInfo(
+            @RequestBody CinemaUpdate cinemaUpdate,
+            @PathVariable String id
+    ) {
+        return ResponseEntity.ok(cinemaService.updateCinema(cinemaUpdate, id));
     }
 }

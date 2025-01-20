@@ -1,10 +1,12 @@
 package com.example.movieofficial.api.movie;
 
+import com.example.movieofficial.api.movie.controllers.MovieController;
 import com.example.movieofficial.api.movie.dtos.MovieDetail;
 import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;
 import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
 import com.example.movieofficial.api.movie.dtos.StatusInfo;
-import com.example.movieofficial.api.movie.interfaces.services.MovieService;
+import com.example.movieofficial.api.movie.hateoas.MovieModelAssembler;
+import com.example.movieofficial.api.movie.services.MovieService;
 import com.example.movieofficial.utils.dtos.PageResponse;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;

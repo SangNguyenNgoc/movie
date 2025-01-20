@@ -1,7 +1,7 @@
 package com.example.movieofficial.api.movie.interfaces;
 
 import com.example.movieofficial.api.movie.entities.Movie;
-import com.example.movieofficial.api.movie.interfaces.repositories.MovieRepository;
+import com.example.movieofficial.api.movie.repositories.MovieRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

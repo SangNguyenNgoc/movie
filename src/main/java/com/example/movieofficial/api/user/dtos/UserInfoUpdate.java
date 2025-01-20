@@ -3,6 +3,7 @@ package com.example.movieofficial.api.user.dtos;
 import com.example.movieofficial.api.user.entities.Gender;
 import com.example.movieofficial.api.user.entities.User;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

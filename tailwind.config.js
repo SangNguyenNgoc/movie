@@ -11,6 +11,17 @@ module.exports = {
         notFound: "url('/images/error.svg')"
       },
       colors: {
+        glxCustom: "#034ea2",
+        vipSeat: "rgb(147,73,8)",
+        hallPrimary: "rgb(3,16,28,1)",
+        primary800: "rgb(5,23,43)",
+        primary950: "#030E19",
+        primary900: "#061D33",
+        textPrimary: "#58C9FC",
+        primary700: "rgba(18, 86, 153, 1)",
+        primary500: "#0CAAF2",
+        primary1000: "#020A13",
+        searchText: "#0F172A",
         primary: "#31D7A9",
         notice: "#31AFD7",
         formBackground: "rgba(5, 17, 63, 0.8)",

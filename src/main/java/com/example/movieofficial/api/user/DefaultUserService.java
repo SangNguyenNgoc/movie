@@ -12,6 +12,7 @@ import com.example.movieofficial.api.user.interfaces.UserRepository;
 import com.example.movieofficial.api.user.interfaces.UserService;
 import com.example.movieofficial.api.user.usecases.ChangeEmailUseCase;
 import com.example.movieofficial.api.user.usecases.ChangePassUseCase;
+import com.example.movieofficial.api.user.usecases.ForgotPasswordUseCase;
 import com.example.movieofficial.utils.dtos.PageResponse;
 import com.example.movieofficial.utils.exceptions.AppException;
 import com.example.movieofficial.utils.exceptions.InputInvalidException;
@@ -19,14 +20,20 @@ import com.example.movieofficial.utils.mvc.MessageDto;
 import com.example.movieofficial.utils.services.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,11 +65,10 @@ public class DefaultUserService implements UserService {
     private final AuthorizationCodeService authorizationCodeService;
     private final MailService mailService;
     private final S3Service s3Service;
-    private final RedisService<String> redisService;
 
     private final ChangePassUseCase changePassUseCase;
     private final ChangeEmailUseCase changeEmailUseCase;
-
+    private final ForgotPasswordUseCase forgotPasswordUseCase;
 
     @Value("${url.avatar}")
     private String baseAvatar;
@@ -259,8 +265,8 @@ public class DefaultUserService implements UserService {
 
     @Override
     @Transactional
-    public MessageDto updateEmail(String verifyToken) {
-        return changeEmailUseCase.updateEmail(verifyToken);
+    public void updateEmail(String verifyToken) {
+        changeEmailUseCase.updateEmail(verifyToken);
     }
 
     @Override
@@ -278,13 +284,17 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public void logout(String token) {
-        getByToken(token);
-        long expTimestamp = tokenService.extractExpInSeconds(token.substring(7));
-        long currentTimestamp = Instant.now().getEpochSecond();
-        long secondsRemaining = expTimestamp - currentTimestamp;
-        long minutesRemaining = secondsRemaining / 60;
-        String idToken = tokenService.extractId(token.substring(7));
-        redisService.setValue("black_list:" + idToken, "", minutesRemaining);
+    public void setUpToResetPassword(String email) {
+        forgotPasswordUseCase.setUpToResetPassword(email);
+    }
+
+    @Override
+    public boolean checkTokenResetPass(String token) {
+        return forgotPasswordUseCase.checkTokenResetPassword(token);
+    }
+
+    @Override
+    public void resetPassword(ResetPassRequest request) {
+        forgotPasswordUseCase.resetPassword(request);
     }
 }

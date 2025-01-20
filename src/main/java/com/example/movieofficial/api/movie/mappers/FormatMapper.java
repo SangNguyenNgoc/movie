@@ -1,4 +1,4 @@
-package com.example.movieofficial.api.movie.interfaces.mappers;
+package com.example.movieofficial.api.movie.mappers;
 
 import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
 import com.example.movieofficial.api.movie.entities.Format;

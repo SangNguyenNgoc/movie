@@ -5,6 +5,7 @@ import com.example.movieofficial.api.user.exceptions.UserNotFoundException;
 import com.example.movieofficial.api.user.interfaces.UserRepository;
 import com.example.movieofficial.api.user.usecases.ChangeEmailUseCase;
 import com.example.movieofficial.utils.exceptions.InputInvalidException;
+import com.example.movieofficial.utils.exceptions.UrlInvalidException;
 import com.example.movieofficial.utils.mvc.MessageDto;
 import com.example.movieofficial.utils.services.MailService;
 import com.example.movieofficial.utils.services.RedisService;
@@ -43,33 +44,17 @@ public class DefaultChangeEmail implements ChangeEmailUseCase {
 
     @Override
     @Transactional
-    public MessageDto updateEmail(String verifyToken) {
+    public void updateEmail(String verifyToken) {
         if (tokenService.isTokenExpired(verifyToken)) {
-            return MessageDto.builder()
-                    .title("Thay đổi email")
-                    .subject("Đường dẫn không hợp lệ.")
-                    .img("/images/error.svg")
-                    .msg("Đường dẫn của bạn đã hết hạn hoặc không hợp lệ !")
-                    .build();
+            throw new UrlInvalidException("Thay đổi email");
         }
         User user = getByToken(verifyToken);
         var newEmail = redisService.getAndDeleteValue(user.getId(), new TypeReference<>() {});
         if (newEmail == null) {
-            return MessageDto.builder()
-                    .title("Thay đổi email")
-                    .subject("Đường dẫn không hợp lệ.")
-                    .img("/images/error.svg")
-                    .msg("Đường dẫn của bạn đã hết hạn hoặc không hợp lệ !")
-                    .build();
+            throw new UrlInvalidException("Thay đổi email");
         }
         redisService.deleteValue(user.getId());
         user.setEmail(newEmail);
-        return MessageDto.builder()
-                .title("Thay đổi email")
-                .subject("Cập nhật thành công !")
-                .img("/images/tick.svg")
-                .msg("Email của bạn đã được cập nhật thành công, giờ đây bạn có thể đăng nhập với email mới.")
-                .build();
     }
 
     @Override

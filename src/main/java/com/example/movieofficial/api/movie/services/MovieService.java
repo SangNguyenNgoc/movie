@@ -1,11 +1,10 @@
-package com.example.movieofficial.api.movie.interfaces.services;
+package com.example.movieofficial.api.movie.services;
 
-import com.example.movieofficial.api.movie.dtos.MovieDetail;
-import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;
-import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
-import com.example.movieofficial.api.movie.dtos.StatusInfo;
+import com.example.movieofficial.api.movie.dtos.*;
 import com.example.movieofficial.utils.dtos.PageResponse;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -38,4 +37,15 @@ public interface MovieService {
     void updateMovieStatus();
 
     List<MovieInfoLanding> searchMoviesBySlug(String search);
+
+    MovieInfoAdmin create(
+            String movieRequest, MultipartFile poster,
+            MultipartFile horPoster, List<MultipartFile> images
+    );
+
+    MovieInfoAdmin updateMovieInfo(MovieUpdate movieUpdate, String movieId);
+
+    MovieInfoAdmin updateImages(MultipartFile image, Long imageId, String movieId);
+
+    MovieInfoAdmin updatePoster(MultipartFile poster, String movieId, Boolean horizontal);
 }

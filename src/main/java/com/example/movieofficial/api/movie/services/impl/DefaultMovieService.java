@@ -1,25 +1,25 @@
-package com.example.movieofficial.api.movie.services;
+package com.example.movieofficial.api.movie.services.impl;
 
 import com.example.movieofficial.api.cinema.dtos.CinemaAndShows;
 import com.example.movieofficial.api.cinema.entities.Cinema;
 import com.example.movieofficial.api.cinema.interfaces.CinemaMapper;
 import com.example.movieofficial.api.cinema.interfaces.CinemaRepository;
-import com.example.movieofficial.api.movie.dtos.MovieDetail;
-import com.example.movieofficial.api.movie.dtos.MovieInfoAdmin;
-import com.example.movieofficial.api.movie.dtos.MovieInfoLanding;
-import com.example.movieofficial.api.movie.dtos.StatusInfo;
+import com.example.movieofficial.api.movie.dtos.*;
 import com.example.movieofficial.api.movie.entities.Movie;
 import com.example.movieofficial.api.movie.entities.MovieStatus;
-import com.example.movieofficial.api.movie.interfaces.mappers.MovieMapper;
-import com.example.movieofficial.api.movie.interfaces.repositories.MovieRepository;
-import com.example.movieofficial.api.movie.interfaces.services.MovieService;
-import com.example.movieofficial.api.movie.interfaces.repositories.MovieStatusRepository;
+import com.example.movieofficial.api.movie.mappers.MovieMapper;
+import com.example.movieofficial.api.movie.repositories.MovieRepository;
+import com.example.movieofficial.api.movie.repositories.MovieStatusRepository;
+import com.example.movieofficial.api.movie.services.MovieService;
+import com.example.movieofficial.api.movie.usecases.CreateMovieUseCase;
+import com.example.movieofficial.api.movie.usecases.UpdateMovieUseCase;
 import com.example.movieofficial.api.show.interfaces.ShowMapper;
 import com.example.movieofficial.utils.dtos.PageResponse;
 import com.example.movieofficial.utils.exceptions.DataNotFoundException;
 import com.example.movieofficial.utils.services.RedisService;
 import com.example.movieofficial.utils.services.UtilsService;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -28,6 +28,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -50,6 +51,9 @@ public class DefaultMovieService implements MovieService {
     private final RedisService<List<StatusInfo>> redisStatusInfo;
     private final RedisService<List<MovieInfoLanding>> redisMovieInfo;
     private final UtilsService utils;
+
+    private final CreateMovieUseCase createMovieUseCase;
+    private final UpdateMovieUseCase updateMovieUseCase;
 
     @Value("${show.showing-before-day}")
     private Integer showBeforeDay;
@@ -233,7 +237,42 @@ public class DefaultMovieService implements MovieService {
     @Override
     public List<MovieInfoLanding> searchMoviesBySlug(String search) {
         var slug = utils.toSlug(search);
-        var movies = movieRepository.searchBySlug(slug);
-        return movies.stream().map(movieMapper::toInfoLanding).collect(Collectors.toList());
+        List<MovieInfoLanding> comingSoon = redisMovieInfo.getValue("coming-soon", new TypeReference<List<MovieInfoLanding>>() {});
+        List<MovieInfoLanding> showingNow = redisMovieInfo.getValue("showing-now", new TypeReference<List<MovieInfoLanding>>() {});
+        comingSoon.addAll(showingNow);
+        return comingSoon.stream().filter(movie -> movie.getSlug().contains(slug)).toList();
+    }
+
+    @Override
+    public MovieInfoAdmin create(String movieRequest, MultipartFile poster, MultipartFile horPoster, List<MultipartFile> images) {
+        var result = createMovieUseCase.execute(movieRequest, poster, horPoster, images);
+        redisMovieDetail.deleteValue("movie_detail:" + result.getSlug());
+        return result;
+    }
+
+    @Override
+    public MovieInfoAdmin updateMovieInfo(MovieUpdate movieUpdate, String movieId) {
+        var result = updateMovieUseCase.updateMovieInfo(movieUpdate, movieId);
+        redisMovieDetail.deleteValue("movie_detail:" + result.getSlug());
+        return result;
+    }
+
+    @Override
+    public MovieInfoAdmin updateImages(MultipartFile image, Long imageId, String movieId) {
+        if (image == null) {
+            var result = updateMovieUseCase.deleteImage(imageId, movieId);
+            redisMovieDetail.deleteValue("movie_detail:" + result.getSlug());
+            return result;
+        }
+        var result = updateMovieUseCase.addImage(image, movieId);
+        redisMovieDetail.deleteValue("movie_detail:" + result.getSlug());
+        return result;
+    }
+
+    @Override
+    public MovieInfoAdmin updatePoster(MultipartFile poster, String movieId, Boolean horizontal) {
+        var result =  updateMovieUseCase.updatePoster(poster, movieId, horizontal);
+        redisMovieDetail.deleteValue("movie_detail:" + result.getSlug());
+        return result;
     }
 }
