@@ -44,4 +44,28 @@ public class UtilsService {
         String vietnamesePhoneRegex = "^(0[3|5|7|8|9])[0-9]{8}$";
         return phone.matches(vietnamesePhoneRegex);
     }
+
+    public String mapNumberToChar(int number) {
+        number = number - 1;
+        if (number >= 0 && number <= 25) {
+            char result = (char) ('A' + number);
+            return String.valueOf(result);
+        } else {
+            throw new IllegalArgumentException("Number must be between 0 and 25");
+        }
+    }
+
+    public int mapCharToNumber(String letter) {
+        if (letter == null || letter.length() != 1) {
+            throw new IllegalArgumentException("Input must be a single letter (A-Z)");
+        }
+
+        char charInput = letter.charAt(0);
+        if (charInput >= 'A' && charInput <= 'Z') {
+            return charInput - 'A' + 1;
+        } else {
+            throw new IllegalArgumentException("Letter must be between A and Z");
+        }
+    }
+
 }

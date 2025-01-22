@@ -2,7 +2,7 @@ package com.example.movieofficial.api.show;
 
 import com.example.movieofficial.api.hall.entities.Seat;
 import com.example.movieofficial.api.hall.dtos.SeatRow;
-import com.example.movieofficial.api.hall.interfaces.SeatMapper;
+import com.example.movieofficial.api.hall.mappers.SeatMapper;
 import com.example.movieofficial.api.show.dtos.ShowAutoCreate;
 import com.example.movieofficial.api.show.dtos.ShowCreate;
 import com.example.movieofficial.api.show.dtos.ShowDetail;
@@ -16,6 +16,7 @@ import com.example.movieofficial.api.show.usecases.CreateShowUseCase;
 import com.example.movieofficial.api.ticket.entities.Ticket;
 import com.example.movieofficial.api.ticket.interfaces.TicketRepository;
 import com.example.movieofficial.utils.exceptions.DataNotFoundException;
+import com.example.movieofficial.utils.services.UtilsService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -41,6 +42,7 @@ public class DefaultShowService implements ShowService {
     TicketRepository ticketRepository;
     ShowMapper showMapper;
     SeatMapper seatMapper;
+    UtilsService utilsService;
 
     //Use cases
     AutoScheduleShowUseCase autoCreateShow;
@@ -75,7 +77,7 @@ public class DefaultShowService implements ShowService {
                         Collectors.groupingBy(seat ->
                                 SeatRow.builder()
                                         .row(seat.getCurrRow())
-                                        .rowName(mapNumberToChar(seat.getCurrRow()))
+                                        .rowName(utilsService.mapNumberToChar(seat.getCurrRow()))
                                         .build(),
                                 TreeMap::new,
                                 Collectors.toList()
@@ -110,16 +112,6 @@ public class DefaultShowService implements ShowService {
         return showDetail;
     }
 
-
-    public String mapNumberToChar(int number) {
-        number = number - 1;
-        if (number >= 0 && number <= 25) {
-            char result = (char) ('A' + number);
-            return String.valueOf(result);
-        } else {
-            throw new IllegalArgumentException("Number must be between 0 and 25");
-        }
-    }
 
 
     @Override

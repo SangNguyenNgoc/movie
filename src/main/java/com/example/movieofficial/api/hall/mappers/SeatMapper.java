@@ -1,4 +1,4 @@
-package com.example.movieofficial.api.hall.interfaces;
+package com.example.movieofficial.api.hall.mappers;
 
 import com.example.movieofficial.api.hall.entities.Seat;
 import com.example.movieofficial.api.hall.dtos.SeatRow;

@@ -1,7 +1,7 @@
 package com.example.movieofficial.api.show.usecases.impl;
 
 import com.example.movieofficial.api.hall.entities.Hall;
-import com.example.movieofficial.api.hall.interfaces.HallRepository;
+import com.example.movieofficial.api.hall.repositories.HallRepository;
 import com.example.movieofficial.api.movie.entities.Format;
 import com.example.movieofficial.api.movie.entities.Movie;
 import com.example.movieofficial.api.movie.repositories.FormatRepository;

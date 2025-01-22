@@ -1,0 +1,269 @@
+{
+  "cinemaId": "9571ccad-f76f-4bf9-8078-6a0e217bad5c",
+  "name": "Rạp 4",
+  "totalSeats": 44,
+  "numberOfRows": 4,
+  "colsPerRow": 15,
+  "rows": [
+    {
+      "rowName": "D",
+      "seats": [
+        {
+          "typeId": 3,
+          "currCol": 15
+        },
+        {
+          "typeId": 1,
+          "currCol": 14
+        },
+        {
+          "typeId": 1,
+          "currCol": 13
+        },
+        {
+          "typeId": 1,
+          "currCol": 12
+        },
+        {
+          "typeId": 1,
+          "currCol": 11
+        },
+        {
+          "typeId": 1,
+          "currCol": 10
+        },
+        {
+          "typeId": 1,
+          "currCol": 9
+        },
+        {
+          "typeId": 1,
+          "currCol": 9
+        },
+        {
+          "typeId": 1,
+          "currCol": 7
+        },
+        {
+          "typeId": 1,
+          "currCol": 6
+        },
+        {
+          "typeId": 1,
+          "currCol": 5
+        },
+        {
+          "typeId": 3,
+          "currCol": 4
+        },
+        {
+          "typeId": 3,
+          "currCol": 3
+        },
+        {
+          "typeId": 1,
+          "currCol": 2
+        },
+        {
+          "typeId": 1,
+          "currCol": 1
+        }
+      ]
+    },
+    {
+      "rowName": "C",
+      "seats": [
+        {
+          "typeId": 3,
+          "currCol": 15
+        },
+        {
+          "typeId": 1,
+          "currCol": 14
+        },
+        {
+          "typeId": 1,
+          "currCol": 13
+        },
+        {
+          "typeId": 1,
+          "currCol": 12
+        },
+        {
+          "typeId": 1,
+          "currCol": 11
+        },
+        {
+          "typeId": 1,
+          "currCol": 10
+        },
+        {
+          "typeId": 1,
+          "currCol": 9
+        },
+        {
+          "typeId": 1,
+          "currCol": 9
+        },
+        {
+          "typeId": 1,
+          "currCol": 7
+        },
+        {
+          "typeId": 1,
+          "currCol": 6
+        },
+        {
+          "typeId": 1,
+          "currCol": 5
+        },
+        {
+          "typeId": 3,
+          "currCol": 4
+        },
+        {
+          "typeId": 3,
+          "currCol": 3
+        },
+        {
+          "typeId": 1,
+          "currCol": 2
+        },
+        {
+          "typeId": 1,
+          "currCol": 1
+        }
+      ]
+    },
+    {
+      "rowName": "B",
+      "seats": [
+        {
+          "typeId": 3,
+          "currCol": 15
+        },
+        {
+          "typeId": 1,
+          "currCol": 14
+        },
+        {
+          "typeId": 1,
+          "currCol": 13
+        },
+        {
+          "typeId": 1,
+          "currCol": 12
+        },
+        {
+          "typeId": 1,
+          "currCol": 11
+        },
+        {
+          "typeId": 1,
+          "currCol": 10
+        },
+        {
+          "typeId": 1,
+          "currCol": 9
+        },
+        {
+          "typeId": 1,
+          "currCol": 9
+        },
+        {
+          "typeId": 1,
+          "currCol": 7
+        },
+        {
+          "typeId": 1,
+          "currCol": 6
+        },
+        {
+          "typeId": 1,
+          "currCol": 5
+        },
+        {
+          "typeId": 3,
+          "currCol": 4
+        },
+        {
+          "typeId": 3,
+          "currCol": 3
+        },
+        {
+          "typeId": 3,
+          "currCol": 2
+        },
+        {
+          "typeId": 3,
+          "currCol": 1
+        }
+      ]
+    },
+    {
+      "rowName": "A",
+      "seats": [
+        {
+          "typeId": 3,
+          "currCol": 15
+        },
+        {
+          "typeId": 1,
+          "currCol": 14
+        },
+        {
+          "typeId": 1,
+          "currCol": 13
+        },
+        {
+          "typeId": 1,
+          "currCol": 12
+        },
+        {
+          "typeId": 1,
+          "currCol": 11
+        },
+        {
+          "typeId": 1,
+          "currCol": 10
+        },
+        {
+          "typeId": 1,
+          "currCol": 9
+        },
+        {
+          "typeId": 1,
+          "currCol": 9
+        },
+        {
+          "typeId": 1,
+          "currCol": 7
+        },
+        {
+          "typeId": 1,
+          "currCol": 6
+        },
+        {
+          "typeId": 1,
+          "currCol": 5
+        },
+        {
+          "typeId": 3,
+          "currCol": 4
+        },
+        {
+          "typeId": 3,
+          "currCol": 3
+        },
+        {
+          "typeId": 3,
+          "currCol": 2
+        },
+        {
+          "typeId": 3,
+          "currCol": 1
+        }
+      ]
+    }
+  ]
+}

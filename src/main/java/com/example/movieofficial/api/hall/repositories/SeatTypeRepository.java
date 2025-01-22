@@ -1,4 +1,4 @@
-package com.example.movieofficial.api.hall.interfaces;
+package com.example.movieofficial.api.hall.repositories;
 
 import com.example.movieofficial.api.hall.entities.SeatType;
 import org.springframework.data.jpa.repository.JpaRepository;

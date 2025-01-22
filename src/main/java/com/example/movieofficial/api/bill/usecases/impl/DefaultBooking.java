@@ -8,7 +8,7 @@ import com.example.movieofficial.api.bill.interfaces.repositories.BillStatusRepo
 import com.example.movieofficial.api.bill.usecases.BookingUseCase;
 import com.example.movieofficial.api.hall.entities.Hall;
 import com.example.movieofficial.api.hall.entities.Seat;
-import com.example.movieofficial.api.hall.interfaces.SeatRepository;
+import com.example.movieofficial.api.hall.repositories.SeatRepository;
 import com.example.movieofficial.api.show.entities.Show;
 import com.example.movieofficial.api.show.interfaces.ShowRepository;
 import com.example.movieofficial.api.ticket.entities.Ticket;
