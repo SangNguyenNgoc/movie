@@ -5,8 +5,13 @@ services:
       TAG: movie
     build: .
     container_name: movie
-    restart: always
+    restart: on-failure
     ports:
       - "8080:8080"
     env_file:
       - .env
+
+networks:
+  default:
+    external: true
+    name: movie
