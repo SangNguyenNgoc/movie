@@ -352,4 +352,31 @@ public class MovieController {
         return ResponseEntity.ok(movieService.updatePoster(poster, id, horizontal));
     }
 
+
+    @Operation(
+            summary = "Rating movie",
+            description = "This API endpoint allow user to rating a movie"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Update successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ListResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "User already rated before.",
+                    content = @Content(mediaType = "application/json")
+            )
+    })
+    @PostMapping("/{slug}/rating")
+    public ResponseEntity<Void> ratingMovie(
+            @PathVariable(value = "slug") String slug,
+            @RequestParam(value = "rating") Integer rating,
+            @RequestParam(value = "key") String key
+    ) {
+        movieService.ratingMovie(slug, rating, key);
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -12,6 +12,7 @@ import com.example.movieofficial.api.movie.repositories.MovieRepository;
 import com.example.movieofficial.api.movie.repositories.MovieStatusRepository;
 import com.example.movieofficial.api.movie.services.MovieService;
 import com.example.movieofficial.api.movie.usecases.CreateMovieUseCase;
+import com.example.movieofficial.api.movie.usecases.RatingUseCase;
 import com.example.movieofficial.api.movie.usecases.UpdateMovieUseCase;
 import com.example.movieofficial.api.show.interfaces.ShowMapper;
 import com.example.movieofficial.utils.dtos.PageResponse;
@@ -54,6 +55,7 @@ public class DefaultMovieService implements MovieService {
 
     private final CreateMovieUseCase createMovieUseCase;
     private final UpdateMovieUseCase updateMovieUseCase;
+    private final RatingUseCase ratingUseCase;
 
     @Value("${show.showing-before-day}")
     private Integer showBeforeDay;
@@ -274,5 +276,10 @@ public class DefaultMovieService implements MovieService {
         var result =  updateMovieUseCase.updatePoster(poster, movieId, horizontal);
         redisMovieDetail.deleteValue("movie_detail:" + result.getSlug());
         return result;
+    }
+
+    @Override
+    public void ratingMovie(String movieSlug, Integer rating, String ratingKey) {
+        ratingUseCase.execute(movieSlug, rating, ratingKey);
     }
 }

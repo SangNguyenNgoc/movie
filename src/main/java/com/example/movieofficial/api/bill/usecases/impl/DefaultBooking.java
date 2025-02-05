@@ -53,7 +53,6 @@ public class DefaultBooking implements BookingUseCase {
 
     RedisTemplate<String, Object> redisTemplate;
 
-
     @Override
     @Transactional
     public String execute(BillCreate billCreate, String token) {

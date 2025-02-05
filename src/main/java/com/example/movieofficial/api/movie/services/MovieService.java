@@ -2,7 +2,6 @@ package com.example.movieofficial.api.movie.services;
 
 import com.example.movieofficial.api.movie.dtos.*;
 import com.example.movieofficial.utils.dtos.PageResponse;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,4 +47,6 @@ public interface MovieService {
     MovieInfoAdmin updateImages(MultipartFile image, Long imageId, String movieId);
 
     MovieInfoAdmin updatePoster(MultipartFile poster, String movieId, Boolean horizontal);
+
+    void ratingMovie(String movieSlug, Integer rating, String ratingKey);
 }

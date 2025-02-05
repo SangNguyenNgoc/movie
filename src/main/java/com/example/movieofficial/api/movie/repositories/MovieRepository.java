@@ -102,4 +102,10 @@ public interface MovieRepository extends JpaRepository<Movie, String> {
     @Modifying
     @Query(value = "delete from movie_format where format_id = ?1 and movie_id = ?2", nativeQuery = true)
     void deleteFormat(Long formatId, String movieId);
+
+    @Modifying
+    @Query("UPDATE Movie m SET m.sumOfRatings = m.sumOfRatings + :rating, " +
+            "m.numberOfRatings = m.numberOfRatings + 1 WHERE m.slug = :slug")
+    void updateRating(@Param("slug") String slug, @Param("rating") Integer rating);
+
 }
