@@ -5,7 +5,6 @@ import com.example.movieofficial.api.movie.hateoas.MovieModelAssembler;
 import com.example.movieofficial.api.movie.services.MovieService;
 import com.example.movieofficial.utils.dtos.ListResponse;
 import com.example.movieofficial.utils.dtos.PageResponse;
-import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,8 +15,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -85,7 +82,6 @@ public class MovieController {
             @RequestParam("page") Integer page,
             @RequestParam("size") Integer size
     ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         PageResponse<MovieInfoLanding> response = movieService.getMoviesByStatusFromRedis("coming-soon", page - 1, size);
         response.getData().forEach(movieAssembler::linkToGetMovieDetail);
         response.add(linkTo(MovieController.class)
