@@ -3,6 +3,7 @@ services:
   server:
     environment:
       TAG: movie
+      TZ: Asia/Ho_Chi_Minh
     build: .
     container_name: movie
     restart: on-failure
