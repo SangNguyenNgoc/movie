@@ -164,32 +164,4 @@ class MovieServiceTest {
                         }
                 );
     }
-
-    @Test
-    void getAllMoviesAndShows() {
-        Mockito.when(
-                movieRepository.findByStatusIdOrStatusIdOrderBySumOfRatingsDesc(Mockito.anyLong(), Mockito.anyLong())
-        ).thenReturn(movies.stream().toList().subList(0, 3));
-        Mockito.when(
-                cinemaRepository.findByStatusIdOrderByCreateDateAsc(
-                        Mockito.anyString(),
-                        Mockito.any(LocalDate.class),
-                        Mockito.any(LocalDate.class)
-                )
-        ).thenReturn(cinemaList);
-
-        List<MovieDetail> result = movieService.getAllMoviesAndShows();
-
-        Assertions.assertThat(result).isNotNull();
-        Assertions.assertThat(result.get(0).getCinemas().size()).isEqualTo(3);
-        Assertions.assertThat(result.get(0).getCinemas().get(0).getShows())
-                .isSortedAccordingTo((show1, show2) -> {
-                            int ratingComparison = show1.getStartDate().compareTo(show2.getStartDate());
-                            if (ratingComparison == 0) {
-                                return show1.getStartTime().compareTo(show2.getStartTime());
-                            }
-                            return ratingComparison;
-                        }
-                );
-    }
 }

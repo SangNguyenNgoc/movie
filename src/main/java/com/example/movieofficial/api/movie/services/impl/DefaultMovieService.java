@@ -23,6 +23,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
@@ -198,15 +200,11 @@ public class DefaultMovieService implements MovieService {
 
     @Override
     @Scheduled(cron = "0 0 4 * * ?", zone = "Asia/Ho_Chi_Minh")
-//    @EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationReadyEvent.class)
     @Async
     @Transactional
     public void cacheAllMoviesCinemasShows() {
         redisMovieDetail.deleteKeysWithPrefix("movie_detail:");
-        List<MovieDetail> movieDetails = getAllMoviesAndShows();
-        movieDetails.forEach(movieDetail ->
-                redisMovieDetail.setValue("movie_detail:" + movieDetail.getSlug(), movieDetail)
-        );
     }
 
     @Override
