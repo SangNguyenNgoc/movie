@@ -1,0 +1,23 @@
+name: Movie Booking app deployment
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy using SSH key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_NAME }}
+          key: ${{ secrets.VPS_KEY }}
+          port: 22
+          script: |
+            cd ${{ secrets.PROJECT_PATH }}
+            git fetch origin
+            git checkout main
+            git pull
+            docker compose up -d --build
