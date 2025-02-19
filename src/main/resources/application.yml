@@ -2,8 +2,6 @@ server:
   port: 8080
   forward-headers-strategy: native
 spring:
-  session:
-    timeout: 60s
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: ${MYSQL_URL}
