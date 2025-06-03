@@ -100,7 +100,7 @@ url:
   login-url: /login
   verify-url: /auth/verify
   reset-pass-url: /auth/reset-password
-  register-page-url: http://localhost:3000/register
+  register-page-url: ${FE_DOMAIN}/register
   change-email-url: /auth/email
   home-page-url: ${SSL}://${FE_DOMAIN}
   avatar: https://cdn.discordapp.com/attachments/1168144426141499412/1169264779769155594/c6e56503cfdd87da299f72dc416023d4.jpg?ex=66a2512f&is=66a0ffaf&hm=a7dfbd6f1d504be1302857abc0dcb2abc9f8f03741eb92319d5c2dcc2d1f7184&
