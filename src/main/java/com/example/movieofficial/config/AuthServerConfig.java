@@ -1,7 +1,5 @@
 package com.example.movieofficial.config;
 
-import com.example.movieofficial.api.user.exceptions.UnauthorizedException;
-import com.example.movieofficial.api.user.exceptions.UserNotFoundException;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -34,8 +32,6 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
-import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -43,7 +39,6 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -79,7 +74,7 @@ public class AuthServerConfig {
                         .requireProofKey(requireProofKey)
                         .build())
                 .tokenSettings(TokenSettings.builder()
-                        .accessTokenTimeToLive(Duration.ofDays(accessTokenTimeToLive))
+                        .accessTokenTimeToLive(Duration.ofMinutes(accessTokenTimeToLive))
                         .build())
                 .build();
         return new InMemoryRegisteredClientRepository(registeredClient);

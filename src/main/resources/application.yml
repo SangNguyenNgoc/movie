@@ -75,6 +75,7 @@ client:
   redirect-uris:
     - ${url.base-url}/authorized
     - ${SSL}://${FE_DOMAIN}/authorized
+    - ${SSL}://${FE_DOMAIN}/oidc-silent-redirect
     - ${SSL}://oauth.pstmn.io/v1/callback
     - ${url.base-url}
     - ${url.base-url}/swagger-ui/oauth2-redirect.html
@@ -91,7 +92,7 @@ springdoc:
 
 token:
   key-size: 2048
-  access-token-time-to-live: 1
+  access-token-time-to-live: 5
 
 url:
   host: ${DOMAIN}
