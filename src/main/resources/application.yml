@@ -112,7 +112,7 @@ vn_pay:
   tmn_code: ${TMN_CODE}
   key: ${VNPAY_KEY}
   time_out: 10
-  bill_detail: http://localhost:3000/bill/
+  bill_detail: ${url.home-page-url}/bill/
 
 s3client:
   endpoint_url: ${ENDPOINT}
