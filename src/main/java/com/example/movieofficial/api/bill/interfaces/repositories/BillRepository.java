@@ -30,4 +30,8 @@ public interface BillRepository extends JpaRepository<Bill, String> {
             "and b.status.id = ?2")
     void deleteByExpireAtAndStatusId(LocalDateTime expireAt, Integer statusId);
 
+    @Transactional
+    @Modifying
+    void deleteByIdAndStatusId(String id, Integer statusId);
+
 }

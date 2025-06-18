@@ -1,7 +1,9 @@
 package com.example.movieofficial.api.bill;
 
+import com.example.movieofficial.api.bill.dtos.AddConcessionToBill;
 import com.example.movieofficial.api.bill.dtos.BillCreate;
 import com.example.movieofficial.api.bill.dtos.BillDetail;
+import com.example.movieofficial.api.bill.dtos.BillSession;
 import com.example.movieofficial.api.bill.interfaces.services.BillService;
 import com.example.movieofficial.utils.dtos.ListResponse;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -56,36 +58,26 @@ public class BillController {
     })
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<String> create(
+    public ResponseEntity<BillSession> createSession(
             @RequestBody BillCreate billCreate,
             HttpServletRequest request
     ) {
         String token = request.getHeader("Authorization");
-        String url = billService.create(billCreate, token);
-        return ResponseEntity.ok(url);
+        var result = billService.createSession(billCreate, token);
+        return ResponseEntity.ok(result);
     }
 
 
-    @GetMapping("/payment")
-    @Hidden
-    public ResponseEntity<Void> handlePayment(
-            @RequestParam("vnp_Amount") String amount,
-            @RequestParam("vnp_BankCode") String bankCode,
-            @RequestParam("vnp_BankTranNo") String bankTranNo,
-            @RequestParam("vnp_CardType") String cardType,
-            @RequestParam("vnp_OrderInfo") String orderInfo,
-            @RequestParam("vnp_PayDate") String payDate,
-            @RequestParam("vnp_ResponseCode") String responseCode,
-            @RequestParam("vnp_TmnCode") String tmnCode,
-            @RequestParam("vnp_TransactionNo") String transactionNo,
-            @RequestParam("vnp_TransactionStatus") String transactionStatus,
-            @RequestParam("vnp_TxnRef") String txnRef,
-            @RequestParam("vnp_SecureHash") String secureHash
+    @PostMapping("/{billId}/concessions")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<String> addConcessionToBill(
+            @PathVariable(name = "billId") String billId,
+            @RequestBody AddConcessionToBill addConcessionToBill,
+            HttpServletRequest request
     ) {
-        String redirect = billService.payment(txnRef, responseCode, transactionStatus, payDate);
-        return ResponseEntity.status(302)
-                .location(URI.create(redirect))
-                .build();
+        String token = request.getHeader("Authorization");
+        var result = billService.addConcessionToBill(billId, addConcessionToBill, token);
+        return ResponseEntity.ok(result);
     }
 
 
@@ -168,5 +160,17 @@ public class BillController {
     ) {
         String token = request.getHeader("Authorization");
         return ResponseEntity.ok(billService.getBillDetail(billId, token));
+    }
+
+
+    @DeleteMapping("/{billId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<Void> deleteSession(
+            @PathVariable(name = "billId") String billId,
+            HttpServletRequest request
+    ) {
+        String token = request.getHeader("Authorization");
+        billService.deleteSession(token, billId);
+        return ResponseEntity.ok().build();
     }
 }

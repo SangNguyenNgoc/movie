@@ -1,5 +1,7 @@
 package com.example.movieofficial.api.bill.entities;
 
+import com.example.movieofficial.api.concession.entities.ConcessionBill;
+import com.example.movieofficial.api.payment.entities.Payment;
 import com.example.movieofficial.api.ticket.entities.Ticket;
 import com.example.movieofficial.api.user.entities.User;
 import com.example.movieofficial.utils.auditing.AuditorEntity;
@@ -34,7 +36,7 @@ public class Bill extends TimestampEntity {
     @Column(name = "total", nullable = false)
     private Long total;
 
-    @Column(name = "payment_url", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "payment_url", columnDefinition = "TEXT", nullable = true)
     private String paymentUrl;
 
     @Column(name = "failure_reason", nullable = true)
@@ -70,5 +72,20 @@ public class Bill extends TimestampEntity {
     )
     private BillStatus status;
 
+    @OneToMany(
+            mappedBy = "bill",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<ConcessionBill> concessionBills;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(
+            name = "method_id",
+            nullable = true,
+            referencedColumnName = "id"
+    )
+    private Payment paymentMethod;
 
 }

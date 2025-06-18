@@ -1,6 +1,12 @@
-package com.example.movieofficial.utils.services;
+package com.example.movieofficial.api.payment.method.impl.vnpay;
 
-import com.example.movieofficial.config.VnPayConfig;
+import com.example.movieofficial.api.bill.entities.Bill;
+import com.example.movieofficial.api.bill.entities.BillStatus;
+import com.example.movieofficial.api.bill.interfaces.repositories.BillRepository;
+import com.example.movieofficial.api.bill.interfaces.repositories.BillStatusRepository;
+import com.example.movieofficial.api.payment.method.PaymentMethod;
+import com.example.movieofficial.api.payment.method.PaymentProcess;
+import com.example.movieofficial.utils.exceptions.DataNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,23 +16,29 @@ import org.springframework.stereotype.Service;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class VnPayService {
+public class VnPayPaymentProcess implements PaymentProcess {
 
     private final HttpServletRequest request;
-
     private final VnPayConfig vnPayConfig;
+    private final BillRepository billRepository;
+    private final BillStatusRepository billStatusRepository;
 
     @Getter
     @Value("${vn_pay.bill_detail}")
     private String redirectBill;
 
-    public String doPost(long cost, String id) {
+    @Override
+    public String execute(long cost, String id, LocalDateTime expireTime) {
 
-        Map<String, String> vnp_Params = initParams(cost, id);
+        Map<String, String> vnp_Params = initParams(cost, id, expireTime);
 
         List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
         Collections.sort(fieldNames);
@@ -57,6 +69,38 @@ public class VnPayService {
         return vnPayConfig.vnp_PayUrl + "?" + queryUrl;
     }
 
+    @Override
+    public PaymentMethod getSupportedMethod() {
+        return PaymentMethod.VNPAY;
+    }
+
+    @Override
+    public String handelCallBack(HttpServletRequest handleRequest) {
+        String id = request.getParameter("vnp_TxnRef");
+        String responseCode = request.getParameter("vnp_ResponseCode");
+        String paymentAt = request.getParameter("vnp_PayDate");
+        String transactionStatus = request.getParameter("vnp_TransactionStatus");
+        Bill bill = billRepository.findByIdAndStatusId(id, 4).orElseThrow(
+                () -> new DataNotFoundException("Data not found", List.of("Bill not found"))
+        );
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        LocalDateTime dateTime = LocalDateTime.parse(paymentAt, formatter);
+        if (responseCode.equals("00") && transactionStatus.equals("00")) {
+            BillStatus billStatus = billStatusRepository.findById(2).orElseThrow(
+                    () -> new DataNotFoundException("Data not found", List.of("Status not found")));
+            if (bill.getFailure() != null) bill.setFailure(null);
+            if (bill.getFailureReason() != null) bill.setFailureReason(null);
+            bill.setStatus(billStatus);
+            bill.setPaymentAt(dateTime);
+        } else {
+            String message = getMessage(responseCode, transactionStatus);
+            bill.setFailureReason(message);
+            bill.setFailureAt(dateTime);
+            bill.setFailure(true);
+        }
+        return redirectBill + bill.getId();
+    }
+
     public String getIpAddress() {
         String ipAdress;
         try {
@@ -70,7 +114,7 @@ public class VnPayService {
         return ipAdress;
     }
 
-    protected Map<String, String> initParams(long cost, String id) {
+    protected Map<String, String> initParams(long cost, String id, LocalDateTime expireTime) {
         var vnp_Version = "2.1.0";
         var vnp_Command = "pay";
         var orderType = "other";
@@ -92,13 +136,15 @@ public class VnPayService {
         vnp_Params.put("vnp_ReturnUrl", vnPayConfig.vnp_ReturnUrl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
-        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-        String vnp_CreateDate = formatter.format(cld.getTime());
-        vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
-        cld.add(Calendar.MINUTE, vnPayConfig.timeOut);
-        String vnp_ExpireDate = formatter.format(cld.getTime());
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("GMT+7"));
+        ZonedDateTime expire = expireTime.atZone(ZoneId.of("GMT+7"));
+
+        String vnp_CreateDate = now.format(formatter);
+        String vnp_ExpireDate = expire.format(formatter);
+
+        vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
         vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
         return vnp_Params;

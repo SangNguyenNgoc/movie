@@ -2,6 +2,7 @@ package com.example.movieofficial.api.bill.dtos;
 
 import com.example.movieofficial.api.bill.entities.Bill;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -30,6 +31,7 @@ public class BillDetail implements Serializable {
     private BillDetail.BillStatusDto status;
     private TicketDto.ShowDto show;
     private Set<TicketDto> tickets;
+    private Set<ConcessionDto> concessions;
 
     /**
      * DTO for {@link com.example.movieofficial.api.bill.entities.BillStatus}
@@ -147,5 +149,14 @@ public class BillDetail implements Serializable {
                 private Long price;
             }
         }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ConcessionDto implements Serializable {
+        private String name;
+        private Long amount;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.movieofficial.api.cinema.entities;
 
+import com.example.movieofficial.api.concession.entities.Concession;
 import com.example.movieofficial.api.hall.entities.Hall;
 import com.example.movieofficial.utils.auditing.AuditorEntity;
 import jakarta.persistence.*;
@@ -50,6 +51,14 @@ public class Cinema extends AuditorEntity {
             cascade = CascadeType.ALL
     )
     private Set<Hall> halls;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "cinema_concession",
+            joinColumns = @JoinColumn(name = "cinema_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "concession_id", nullable = false)
+    )
+    private Set<Concession> concessions;
 
 
 }

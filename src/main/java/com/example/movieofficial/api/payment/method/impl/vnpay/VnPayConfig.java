@@ -1,4 +1,4 @@
-package com.example.movieofficial.config;
+package com.example.movieofficial.api.payment.method.impl.vnpay;
 
 
 import org.springframework.beans.factory.annotation.Value;
@@ -25,9 +25,6 @@ public class VnPayConfig {
 
     @Value("${vn_pay.key}")
     public String secretKey;
-
-    @Value("${vn_pay.time_out}")
-    public Integer timeOut;
 
 
 //    public String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
